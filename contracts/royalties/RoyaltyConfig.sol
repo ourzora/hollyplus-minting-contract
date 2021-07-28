@@ -3,14 +3,12 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+
+import "./IRaribleRoyalties.sol";
+import "./RoyaltyConfig.sol";
 import "./IERC2981.sol";
 
-///
-/// Impl for the NFT Royalty Standard
-/// @author iain <iain@zora.co>
-///
-contract ERC2981 is IERC2981, ERC165 {
-    uint256 private constant PERCENTAGE_SCALE = 10e5;
+contract RoyaltyConfig is IERC2981, IRaribleRoyalites, ERC165 {
     event UpdatedRoyalty(address recipient, uint256 bps);
 
     struct RoyaltyInfo {
@@ -31,6 +29,8 @@ contract ERC2981 is IERC2981, ERC165 {
         });
     }
 
+    uint256 private constant PERCENTAGE_SCALE = 10e5;
+
     /// @notice Called with the sale price to determine how much royalty
     //          is owed and to whom.
     /// @param tokenId - the NFT asset queried for royalty information
@@ -50,12 +50,27 @@ contract ERC2981 is IERC2981, ERC165 {
         );
     }
 
-    /**
-     * @dev See {IERC165-supportsInterface}.
+    // rarible api
+    function getRoyalties(uint256 tokenId)
+        external
+        view
+        override(IRaribleRoyalites)
+        returns (LibPart.Part[] memory)
+    {
+        RoyaltyInfo memory royalty = royalties[tokenId];
+
+        LibPart.Part[] memory result = new LibPart.Part[](1);
+        result[0].account = payable(royalty.receiver);
+        result[0].value = uint96(royalty.bps);
+        return result;
+    }
+
+    /*
+     * bytes4(keccak256('getRoyalties(LibAsset.AssetType)')) == 0x44c74bcc
      */
-    /// bytes4(keccak256("royaltyInfo(uint256,uint256)")) == 0x2a55205a
-    /// bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
-    /// _registerInterface(_INTERFACE_ID_ERC2981);
+    bytes4 private constant _INTERFACE_ID_ROYALTIES = 0x44c74bcc;
+    bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
+
     function supportsInterface(bytes4 interfaceId)
         public
         view
@@ -64,7 +79,8 @@ contract ERC2981 is IERC2981, ERC165 {
         returns (bool)
     {
         return
-            interfaceId == type(IERC2981).interfaceId ||
+            interfaceId == _INTERFACE_ID_ROYALTIES ||
+            interfaceId == _INTERFACE_ID_ERC2981 ||
             super.supportsInterface(interfaceId);
     }
 }

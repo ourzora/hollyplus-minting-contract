@@ -24,7 +24,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./ERC2981.sol";
+import "./royalties/RoyaltyConfig.sol";
 
 
 /**
@@ -44,7 +44,7 @@ contract MintableArtistCollection is
     Context,
     AccessControl,
     ERC721Enumerable,
-    ERC2981,
+    RoyaltyConfig,
     ERC721Burnable
 {
     using Counters for Counters.Counter;
@@ -147,7 +147,7 @@ contract MintableArtistCollection is
         public
         view
         virtual
-        override(AccessControl, ERC721, ERC721Enumerable, ERC2981)
+        override(AccessControl, ERC721, ERC721Enumerable, RoyaltyConfig)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
