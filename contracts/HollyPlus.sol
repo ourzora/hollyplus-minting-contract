@@ -1,22 +1,44 @@
 // SPDX-License-Identifier: GPL-v3
 
-
 /**
 
-╔╗      ╔╗ ╔╗          ╔╗         
-║║      ║║ ║║          ║║         
-║╚═╗╔══╗║║ ║║ ╔╗ ╔╗╔══╗║║ ╔╗╔╗╔══╗
-║╔╗║║╔╗║║║ ║║ ║║ ║║║╔╗║║║ ║║║║║══╣
-║║║║║╚╝║║╚╗║╚╗║╚═╝║║╚╝║║╚╗║╚╝║╠══║
-╚╝╚╝╚══╝╚═╝╚═╝╚═╗╔╝║╔═╝╚═╝╚══╝╚══╝
-              ╔═╝║ ║║             
-              ╚══╝ ╚╝             
-
+               .-://///:`                                                                 
+            .:/-.`   `-+/-             `.....                                             
+          -/:`         -+/             `./++-                            .-.              
+        ./:`           `++`              /+:                             -+-              
+      `:/-             `+/              -+/          ``  `               .+.              
+     .//.              -+:              /+.       .:/+/:/+-              .+.              
+    -+/`               /+.             -+:         `/+.`++.              .+.              
+   :+/`               -+:             `//`          /+. ++.              .+.              
+  :+/`               `//`             :+.           /+. ++.              .+.              
+ /++:................:/:.............-+/......----  /+. ++. .---.........-+-........---::-
+.-------------------:+:--------------//---:::::////`/+. ++.:///::::::----:+:--:::::::::/- 
+                   .+/`             :+- `-::://:.   /+. ++.--::.    `:::..+.              
+                  `/+.             .+/`:/.    `:+/. /+. ++.`-++.     //` .+.              
+                 `/+:              //`:+-       :+/`/+. ++.  -+/`   :/`  .+.              
+                 /+/              -+- /+:       `++-/+. ++.   :+/  -/`   .+.              
+                :+/`             `//  :+/`      `+/`/+. ++.    :+:./.    .+.              
+              ./++-              /+.   ://-`   .//. /+- ++.     /+/.     .+-              
+             -::::.             -+:     `-:::::-.  -:::::::.    .+-      -/-              
+                               `//`                            `/-  ``` -`  ` ``          
+                               :+.                    ``      ./-   --.::-. /-::.         
+                              .+:                     //:-..-:/.    -:-.-`---.--`         
+                             `//`                      `.----`      `                     
+                             :+-                                                          
+                            .+/                                                           
+                           `//`                                                           
+                           :+:                                                            
+                          .+/`                                                            
+                         `/+.                                                             
+                         /+/                                                              
+                        :++.                                                              
+                       -++/                                                               
+                     `:////                                                               
 
 
 */
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.5;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -25,7 +47,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./royalties/RoyaltyConfig.sol";
-
+import "./utils/ISubmitterPayoutInformation.sol";
 
 /**
  * ERC721 token contract, including:
@@ -45,6 +67,7 @@ contract MintableArtistCollection is
     AccessControl,
     ERC721Enumerable,
     RoyaltyConfig,
+    ISubmitterPayoutInformation,
     ERC721Burnable
 {
     using Counters for Counters.Counter;
@@ -56,6 +79,7 @@ contract MintableArtistCollection is
     struct TokenInfo {
         string metadataCID;
         string contentCID;
+        address submitterAddress;
     }
     mapping(uint256 => TokenInfo) private tokenInfo;
 
@@ -84,9 +108,31 @@ contract MintableArtistCollection is
         emit URIBaseUpdated(newURI);
     }
 
-    function getIPFSCIDs(uint256 tokenId) public view returns (string memory, string memory) {
+    function getIPFSCIDs(uint256 tokenId)
+        public
+        view
+        returns (string memory, string memory)
+    {
         TokenInfo memory tokenData = tokenInfo[tokenId];
         return (tokenData.metadataCID, tokenData.contentCID);
+    }
+
+    function getSubmitterPayoutInformation(uint256 tokenId)
+        public
+        view
+        override
+        returns (address)
+    {
+        return tokenInfo[tokenId].submitterAddress;
+    }
+
+    function setRoyaltyInfo(address royaltyReceiver, uint256 royaltyBPS)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(royaltyBPS < 10000, "Royalty needs to be less than 10000 bps");
+
+        _setRoyalty(royaltyReceiver, royaltyBPS);
     }
 
     /**
@@ -104,17 +150,16 @@ contract MintableArtistCollection is
         address to,
         string memory metadataCID,
         string memory contentCID,
-        address royaltyReciever,
-        uint256 royaltyBPS
+        address submitterAddress
     ) public onlyRole(MINTER_ROLE) {
         // We cannot just use balanceOf to create the new tokenId because tokens
         // can be burned (destroyed), so we need a separate counter.
         _mint(to, _tokenIdTracker.current());
         tokenInfo[_tokenIdTracker.current()] = TokenInfo({
             metadataCID: metadataCID,
-            contentCID: contentCID
+            contentCID: contentCID,
+            submitterAddress: submitterAddress
         });
-        _setRoyaltyForToken((_tokenIdTracker.current()), royaltyReciever, royaltyBPS);
         _tokenIdTracker.increment();
     }
 
@@ -130,7 +175,12 @@ contract MintableArtistCollection is
         );
 
         return
-            string(abi.encodePacked(_ipfsGatewayURL, tokenInfo[tokenId].metadataCID));
+            string(
+                abi.encodePacked(
+                    _ipfsGatewayURL,
+                    tokenInfo[tokenId].metadataCID
+                )
+            );
     }
 
     // Needed to call multiple supers.

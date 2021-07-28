@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.4;
+pragma solidity 0.8.5;
 
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
@@ -15,15 +15,14 @@ contract RoyaltyConfig is IERC2981, IRaribleRoyalites, ERC165 {
         uint256 bps;
         address receiver;
     }
-    mapping(uint256 => RoyaltyInfo) royalties;
+    RoyaltyInfo royalty;
 
-    function _setRoyaltyForToken(
-        uint256 tokenId,
+    function _setRoyalty(
         address royaltyReciever,
         uint256 royaltyBPS
     ) internal virtual {
         emit UpdatedRoyalty(royaltyReciever, royaltyBPS);
-        royalties[tokenId] = RoyaltyInfo({
+        royalty = RoyaltyInfo({
             receiver: royaltyReciever,
             bps: royaltyBPS
         });
@@ -43,7 +42,6 @@ contract RoyaltyConfig is IERC2981, IRaribleRoyalites, ERC165 {
         override(IERC2981)
         returns (address receiver, uint256 royaltyAmount)
     {
-        RoyaltyInfo memory royalty = royalties[tokenId];
         return (
             royalty.receiver,
             (salePrice * royalty.bps) * (100 * PERCENTAGE_SCALE)
@@ -57,8 +55,6 @@ contract RoyaltyConfig is IERC2981, IRaribleRoyalites, ERC165 {
         override(IRaribleRoyalites)
         returns (LibPart.Part[] memory)
     {
-        RoyaltyInfo memory royalty = royalties[tokenId];
-
         LibPart.Part[] memory result = new LibPart.Part[](1);
         result[0].account = payable(royalty.receiver);
         result[0].value = uint96(royalty.bps);

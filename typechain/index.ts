@@ -3,13 +3,23 @@
 /* eslint-disable */
 export { Erc721Factory } from "./Erc721Factory";
 export type { Erc721 } from "./Erc721";
+export { HollyPlusCuratorFactory } from "./HollyPlusCuratorFactory";
+export type { HollyPlusCurator } from "./HollyPlusCurator";
+export { HollyPlusCuratorFactoryFactory } from "./HollyPlusCuratorFactoryFactory";
+export type { HollyPlusCuratorFactory } from "./HollyPlusCuratorFactory";
+export { InitializedProxyFactory } from "./InitializedProxyFactory";
+export type { InitializedProxy } from "./InitializedProxy";
+export { WethFactory } from "./WethFactory";
+export type { Weth } from "./Weth";
 export { DynamicSketchFactory } from "./DynamicSketchFactory";
 export type { DynamicSketch } from "./DynamicSketch";
 export { DynamicSketchMinterFactory } from "./DynamicSketchMinterFactory";
 export type { DynamicSketchMinter } from "./DynamicSketchMinter";
-export { Erc2981Factory } from "./Erc2981Factory";
-export type { Erc2981 } from "./Erc2981";
 export { FundsRecoverableFactory } from "./FundsRecoverableFactory";
 export type { FundsRecoverable } from "./FundsRecoverable";
 export { MintableArtistCollectionFactory } from "./MintableArtistCollectionFactory";
 export type { MintableArtistCollection } from "./MintableArtistCollection";
+export { LibPartFactory } from "./LibPartFactory";
+export type { LibPart } from "./LibPart";
+export { RoyaltyConfigFactory } from "./RoyaltyConfigFactory";
+export type { RoyaltyConfig } from "./RoyaltyConfig";

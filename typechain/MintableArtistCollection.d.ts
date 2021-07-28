@@ -30,10 +30,12 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "getApproved(uint256)": FunctionFragment;
     "getIPFSCIDs(uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
+    "getRoyalties(uint256)": FunctionFragment;
+    "getSubmitterPayoutInformation(uint256)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(address,string,string,address,uint256)": FunctionFragment;
+    "mint(address,string,string,address)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
@@ -42,6 +44,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setIPFSBaseURI(string)": FunctionFragment;
+    "setRoyaltyInfo(address,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
@@ -78,6 +81,14 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "getRoyalties",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSubmitterPayoutInformation",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "grantRole",
     values: [BytesLike, string]
   ): string;
@@ -91,7 +102,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [string, string, string, string, BigNumberish]
+    values: [string, string, string, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -121,6 +132,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setIPFSBaseURI",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setRoyaltyInfo",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -171,6 +186,14 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoyalties",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSubmitterPayoutInformation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(
@@ -199,6 +222,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setIPFSBaseURI",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRoyaltyInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -355,6 +382,34 @@ export class MintableArtistCollection extends Contract {
       0: string;
     }>;
 
+    getRoyalties(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { account: string; value: BigNumber; 0: string; 1: BigNumber }[];
+    }>;
+
+    "getRoyalties(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { account: string; value: BigNumber; 0: string; 1: BigNumber }[];
+    }>;
+
+    getSubmitterPayoutInformation(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getSubmitterPayoutInformation(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     grantRole(
       role: BytesLike,
       account: string,
@@ -403,17 +458,15 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "mint(address,string,string,address,uint256)"(
+    "mint(address,string,string,address)"(
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -519,6 +572,18 @@ export class MintableArtistCollection extends Contract {
 
     "setIPFSBaseURI(string)"(
       newURI: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setRoyaltyInfo(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setRoyaltyInfo(address,uint256)"(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -681,6 +746,26 @@ export class MintableArtistCollection extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getRoyalties(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{ account: string; value: BigNumber; 0: string; 1: BigNumber }[]>;
+
+  "getRoyalties(uint256)"(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{ account: string; value: BigNumber; 0: string; 1: BigNumber }[]>;
+
+  getSubmitterPayoutInformation(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "getSubmitterPayoutInformation(uint256)"(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   grantRole(
     role: BytesLike,
     account: string,
@@ -721,17 +806,15 @@ export class MintableArtistCollection extends Contract {
     to: string,
     metadataCID: string,
     contentCID: string,
-    royaltyReciever: string,
-    royaltyBPS: BigNumberish,
+    submitterAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "mint(address,string,string,address,uint256)"(
+  "mint(address,string,string,address)"(
     to: string,
     metadataCID: string,
     contentCID: string,
-    royaltyReciever: string,
-    royaltyBPS: BigNumberish,
+    submitterAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -826,6 +909,18 @@ export class MintableArtistCollection extends Contract {
 
   "setIPFSBaseURI(string)"(
     newURI: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setRoyaltyInfo(
+    royaltyReceiver: string,
+    royaltyBPS: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setRoyaltyInfo(address,uint256)"(
+    royaltyReceiver: string,
+    royaltyBPS: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -958,6 +1053,30 @@ export class MintableArtistCollection extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getRoyalties(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      { account: string; value: BigNumber; 0: string; 1: BigNumber }[]
+    >;
+
+    "getRoyalties(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      { account: string; value: BigNumber; 0: string; 1: BigNumber }[]
+    >;
+
+    getSubmitterPayoutInformation(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "getSubmitterPayoutInformation(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     grantRole(
       role: BytesLike,
       account: string,
@@ -998,17 +1117,15 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "mint(address,string,string,address,uint256)"(
+    "mint(address,string,string,address)"(
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1100,6 +1217,18 @@ export class MintableArtistCollection extends Contract {
 
     "setIPFSBaseURI(string)"(
       newURI: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setRoyaltyInfo(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setRoyaltyInfo(address,uint256)"(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1272,6 +1401,26 @@ export class MintableArtistCollection extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getRoyalties(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRoyalties(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getSubmitterPayoutInformation(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getSubmitterPayoutInformation(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     grantRole(
       role: BytesLike,
       account: string,
@@ -1312,17 +1461,15 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "mint(address,string,string,address,uint256)"(
+    "mint(address,string,string,address)"(
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1407,6 +1554,18 @@ export class MintableArtistCollection extends Contract {
 
     "setIPFSBaseURI(string)"(
       newURI: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setRoyaltyInfo(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setRoyaltyInfo(address,uint256)"(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1550,6 +1709,26 @@ export class MintableArtistCollection extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getRoyalties(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getRoyalties(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSubmitterPayoutInformation(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getSubmitterPayoutInformation(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     grantRole(
       role: BytesLike,
       account: string,
@@ -1590,17 +1769,15 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "mint(address,string,string,address,uint256)"(
+    "mint(address,string,string,address)"(
       to: string,
       metadataCID: string,
       contentCID: string,
-      royaltyReciever: string,
-      royaltyBPS: BigNumberish,
+      submitterAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1688,6 +1865,18 @@ export class MintableArtistCollection extends Contract {
 
     "setIPFSBaseURI(string)"(
       newURI: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setRoyaltyInfo(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setRoyaltyInfo(address,uint256)"(
+      royaltyReceiver: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
