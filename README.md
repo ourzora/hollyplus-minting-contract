@@ -1,3 +1,7 @@
-# Bounded Unique Media Editions Contract
+# Hollyplus minting contract
 
-This contract allows for the sale and minting of .
+Features:
+1. ipfs content and metadata
+2. updatable gateway info
+3. ability to resign ownership of minter ability
+4. royalties through new EIP standard (add rarible)
