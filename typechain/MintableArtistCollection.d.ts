@@ -33,7 +33,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(address,string,string)": FunctionFragment;
+    "mint(address,string,string,address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
@@ -91,7 +91,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [string, string, string]
+    values: [string, string, string, string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -403,13 +403,17 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "mint(address,string,string)"(
+    "mint(address,string,string,address,uint256)"(
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -717,13 +721,17 @@ export class MintableArtistCollection extends Contract {
     to: string,
     metadataCID: string,
     contentCID: string,
+    royaltyReciever: string,
+    royaltyBPS: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "mint(address,string,string)"(
+  "mint(address,string,string,address,uint256)"(
     to: string,
     metadataCID: string,
     contentCID: string,
+    royaltyReciever: string,
+    royaltyBPS: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -990,13 +998,17 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "mint(address,string,string)"(
+    "mint(address,string,string,address,uint256)"(
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1300,13 +1312,17 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "mint(address,string,string)"(
+    "mint(address,string,string,address,uint256)"(
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1574,13 +1590,17 @@ export class MintableArtistCollection extends Contract {
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "mint(address,string,string)"(
+    "mint(address,string,string,address,uint256)"(
       to: string,
       metadataCID: string,
       contentCID: string,
+      royaltyReciever: string,
+      royaltyBPS: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

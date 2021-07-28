@@ -37,9 +37,8 @@ import "./ERC2981.sol";
  * This contract uses {AccessControl} to lock permissioned functions using the
  * different roles - head to its documentation for details.
  *
- * The account that deploys the contract will be granted the minter and pauser
- * roles, as well as the default admin role, which will let it grant both minter
- * and pauser roles to other accounts.
+ * The account that deploys the contract will be granted the minter and admin
+ * roles, as well as the default admin role.
  */
 contract MintableArtistCollection is
     Context,
@@ -104,7 +103,9 @@ contract MintableArtistCollection is
     function mint(
         address to,
         string memory metadataCID,
-        string memory contentCID
+        string memory contentCID,
+        address royaltyReciever,
+        uint256 royaltyBPS
     ) public onlyRole(MINTER_ROLE) {
         // We cannot just use balanceOf to create the new tokenId because tokens
         // can be burned (destroyed), so we need a separate counter.
@@ -113,6 +114,7 @@ contract MintableArtistCollection is
             metadataCID: metadataCID,
             contentCID: contentCID
         });
+        _setRoyaltyForToken((_tokenIdTracker.current()), royaltyReciever, royaltyBPS);
         _tokenIdTracker.increment();
     }
 
@@ -131,6 +133,7 @@ contract MintableArtistCollection is
             string(abi.encodePacked(_ipfsGatewayURL, tokenInfo[tokenId].metadataCID));
     }
 
+    // Needed to call multiple supers.
     function _beforeTokenTransfer(
         address from,
         address to,
@@ -139,9 +142,7 @@ contract MintableArtistCollection is
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
+    // Needed to call multiple supers.
     function supportsInterface(bytes4 interfaceId)
         public
         view
