@@ -7,14 +7,12 @@
 
 pragma solidity 0.8.5;
 
+import "hardhat/console.sol";
+
 import "./interfaces/IAuctionHouse.sol";
 import "../utils/ISubmitterPayoutInformation.sol";
 
-// ============ External Imports: Inherited Contracts ============
-// NOTE: we inherit from OpenZeppelin upgradeable contracts
-// because of the proxy structure used for cheaper deploys
-// (the proxies are NOT actually upgradeable)
-import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable2/security/ReentrancyGuardUpgradeable.sol";
 import {IWETH} from "./interfaces/IWETH.sol";
 
 interface IAuctionHouseExtended is IAuctionHouse {
@@ -25,7 +23,7 @@ interface IAuctionHouseExtended is IAuctionHouse {
 }
 
 contract HollyPlusCurator is ReentrancyGuardUpgradeable {
-    event PaidOut();
+    event PaidOut(bool withWETH);
 
     // ============ Immutables ============
     address public immutable auctionHouseContract;
@@ -33,7 +31,7 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
     address public immutable hollyPlusContract;
 
     // ============ Public Not-Mutated Storage ============
-    uint256 public tokenId;
+    // uint256 public tokenId;
     address public tokenCreatorPayout;
     uint8 public tokenCreatorPercentage;
     address public artistPayout;
@@ -52,84 +50,62 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
         weth = _weth;
     }
 
-    function _createAuctionForToken(
-        uint256 _tokenId,
-        uint256 auctionDuration,
-        uint256 reservePrice,
-        uint8 curatorFeePercentage
-    ) internal {
-        auctionId = IAuctionHouse(auctionHouseContract).createAuction(
-            _tokenId,
-            hollyPlusContract,
-            auctionDuration,
-            reservePrice,
-            payable(address(this)),
-            curatorFeePercentage,
-            address(0x0)
-        );
-        IAuctionHouse(auctionHouseContract).setAuctionApproval(auctionId, true);
-    }
-
     // ======== Initializer =========
 
     function initialize(
         uint256 _tokenId,
         uint8 _tokenCreatorPercentage,
         address _artistPayout,
-        uint8 _artistPercentage,
-        uint256 auctionDuration,
-        uint256 reservePrice,
-        uint8 curatorFeePercentage
+        uint8 _artistPercentage
     ) external initializer {
         // initialize ReentrancyGuard
         __ReentrancyGuard_init();
 
-        tokenCreatorPayout = _getTokenCreator();
+        tokenCreatorPayout = _getTokenCreator(_tokenId);
         tokenCreatorPercentage = _tokenCreatorPercentage;
         artistPayout = _artistPayout;
-        artistPercentage = artistPercentage;
-        tokenId = _tokenId;
+        artistPercentage = _artistPercentage;
 
         require(
             _artistPercentage + _tokenCreatorPercentage == 100,
             "Total fee needs to add up to 100%"
         );
-
-        _createAuctionForToken(
-            _tokenId,
-            auctionDuration,
-            reservePrice,
-            curatorFeePercentage
-        );
     }
 
-    function _getTokenCreator() internal view returns (address) {
+    function setAuctionAndApprove(uint256 _auctionId) public {
+        auctionId = _auctionId;
+        IAuctionHouse(auctionHouseContract).setAuctionApproval(_auctionId, true);
+    }
+
+    function _getTokenCreator(uint256 tokenId) internal view returns (address) {
         return
             ISubmitterPayoutInformation(hollyPlusContract)
                 .getSubmitterPayoutInformation(tokenId);
     }
 
     function payout() public {
-        if (address(this).balance == 0) {
+        uint256 balance = address(this).balance;
+        if (balance == 0) {
             return;
         }
-        _transferETHOrWETH(tokenCreatorPayout, tokenCreatorPercentage);
-        _transferETHOrWETH(artistPayout, artistPercentage);
+        _transferETHOrWETH(tokenCreatorPayout, (balance * tokenCreatorPercentage) / 100);
+        _transferETHOrWETH(artistPayout, (balance * artistPercentage) / 100);
 
-        emit PaidOut();
+        emit PaidOut(false);
     }
 
     function payoutWETH() public {
         uint256 wethBalance = IWETH(weth).balanceOf(address(this));
         require(wethBalance > 0, "Needs to have WETH balance");
         IWETH(weth).transfer(
-            _getTokenCreator(),
+            tokenCreatorPayout,
             (wethBalance * tokenCreatorPercentage) / 100
         );
         IWETH(weth).transfer(
             artistPayout,
             (wethBalance * artistPercentage) / 100
         );
+        emit PaidOut(true);
     }
 
     /**
@@ -138,6 +114,7 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
      */
     function finalize() external nonReentrant {
         if (IAuctionHouseExtended(auctionHouseContract).auctions(auctionId).approved) {
+            console.log("ending auction");
             IAuctionHouse(auctionHouseContract).endAuction(auctionId);
         }
 
@@ -150,11 +127,10 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
      * @notice Attempt to transfer ETH to a recipient;
      * if transferring ETH fails, transfer WETH insteads
      * @param _to recipient of ETH or WETH
-     * @param _percentage percentage of stored ETH to send
+     * @param _value value to send
      */
-    function _transferETHOrWETH(address _to, uint8 _percentage) internal {
-        uint256 _value = (address(this).balance * _percentage) / 100;
-
+    function _transferETHOrWETH(address _to, uint256 _value) internal {
+        console.log("transfer", _to, "value", _value);
         // Try to transfer ETH to the given recipient.
         if (!_attemptETHTransfer(_to, _value)) {
             // If the transfer fails, wrap and send as WETH
@@ -185,6 +161,12 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
 
     // Function to receive Ether. msg.data must be empty
     receive() external payable {
+        console.log("has payout no data!");
+        payout();
+    }
+
+    fallback() external payable {
+        console.log("has payout data!");
         payout();
     }
 

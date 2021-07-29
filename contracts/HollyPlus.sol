@@ -40,12 +40,12 @@
 
 pragma solidity 0.8.5;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts2/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts2/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts2/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts2/access/AccessControl.sol";
+import "@openzeppelin/contracts2/utils/Context.sol";
+import "@openzeppelin/contracts2/utils/Counters.sol";
 import "./royalties/RoyaltyConfig.sol";
 import "./utils/ISubmitterPayoutInformation.sol";
 
@@ -123,6 +123,10 @@ contract MintableArtistCollection is
         override
         returns (address)
     {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
         return tokenInfo[tokenId].submitterAddress;
     }
 

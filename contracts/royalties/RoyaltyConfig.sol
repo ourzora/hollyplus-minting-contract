@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.5;
 
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+import "@openzeppelin/contracts2/utils/introspection/ERC165.sol";
 
 import "./IRaribleRoyalties.sol";
 import "./RoyaltyConfig.sol";

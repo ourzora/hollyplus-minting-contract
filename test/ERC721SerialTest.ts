@@ -35,8 +35,7 @@ describe("MintableArtistCollection", () => {
         signer1Address,
         "CID_TEST_METADATA",
         "CID_TEST_CONTENT",
-        signer1Address,
-        1000 // 10% on resale
+        signer1Address
       );
 
       const owner = await mintableArtistInstance.ownerOf(1);
@@ -50,8 +49,7 @@ describe("MintableArtistCollection", () => {
         signer1Address,
         "CID_TEST_METADATA",
         "CID_TEST_CONTENT",
-        signer1Address,
-        1000 // 10% on resale
+        signer1Address
       );
 
       const owner = await mintableArtistInstance.ownerOf(1);
@@ -69,13 +67,14 @@ describe("MintableArtistCollection", () => {
     });
     it("does not allow non-creators to mint an nft", async () => {
       await expect(
-        mintableArtistInstance.connect(signer1).mint(
-          signer1Address,
-          "CID_TEST_METADATA",
-          "CID_TEST_CONTENT",
-          signer1Address,
-          1000 // 10% on resale
-        )
+        mintableArtistInstance
+          .connect(signer1)
+          .mint(
+            signer1Address,
+            "CID_TEST_METADATA",
+            "CID_TEST_CONTENT",
+            signer1Address
+          )
       ).to.be.revertedWith(
         `AccessControl: account ${signer1Address.toLowerCase()} is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`
       );
