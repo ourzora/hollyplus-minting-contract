@@ -35,18 +35,7 @@
                        -++/                                                               
                      `:////                                                               
 
-
 */
-
-pragma solidity 0.8.5;
-pragma experimental ABIEncoderV2;
-
-import "hardhat/console.sol";
-
-import "./HollyPlusCurator.sol";
-import "./InitializedProxy.sol";
-
-
 /*
     Forked from PartyBid v1
     Anna Carroll for PartyDAO
