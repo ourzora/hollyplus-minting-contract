@@ -46,9 +46,9 @@
 pragma solidity 0.8.5;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts2/access/AccessControl.sol";
 import "./HollyPlusCurator.sol";
 import "./InitializedProxy.sol";
-
 
 contract HollyPlusCuratorCreator {
     address private wethAddress;
@@ -83,22 +83,75 @@ contract HollyPlusCuratorCreator {
         );
     }
 
+/**
+  Anyone can list holly+ NFTs with this fn with preset arguments
+  Note: approval needs to be set on the token to this contract (HollyPlusCuratorCreator)
+        along with approvalforall with the AuctionHouse
+        due to a detail as to how the contracts work.
+ */
     function startAuction(
+        uint256 _tokenId,
+        uint256 numberOfDays,
+        uint256 reservePrice
+    ) public {
+        // 18 * 60% =
+        // 10% for the artist fee,
+        // the other 50% goes to the original creator
+        // and 40% goes to the dao.
+        _startAuction(
+            _tokenId,
+            numberOfDays * 24 * 60 * 60,
+            reservePrice,
+            82,
+            60
+        );
+    }
+
+/**
+   This needs token admin to override royalties for curation as needed
+ */
+    function startAuctionFull(
         uint256 _tokenId,
         uint256 auctionDuration,
         uint256 reservePrice,
         uint8 artistSplitOfCuratorPercentage,
         uint8 curatorFeePercentage
-    ) external returns (address) {
+    ) public {
+        require(
+            AccessControl(hollyPlusContract).hasRole(
+                AccessControl(hollyPlusContract).DEFAULT_ADMIN_ROLE(),
+                msg.sender
+            ),
+            "admin needed"
+        );
+        _startAuction(
+            _tokenId,
+            auctionDuration,
+            reservePrice,
+            artistSplitOfCuratorPercentage,
+            curatorFeePercentage
+        );
+    }
+
+    // Should these be hard-coded arguments?
+    function _startAuction(
+        uint256 _tokenId,
+        uint256 auctionDuration,
+        uint256 reservePrice,
+        uint8 artistSplitOfCuratorPercentage,
+        uint8 curatorFeePercentage
+    ) internal returns (address) {
         bytes memory _initializationCalldata = abi.encodeWithSignature(
             "initialize(uint8,uint256)",
             artistSplitOfCuratorPercentage,
             _tokenId
         );
 
-        HollyPlusCurator hollyPlusCuratorProxy = HollyPlusCurator(payable(address(
-            new InitializedProxy(logic, _initializationCalldata)
-        )));
+        HollyPlusCurator hollyPlusCuratorProxy = HollyPlusCurator(
+            payable(
+                address(new InitializedProxy(logic, _initializationCalldata))
+            )
+        );
 
         uint256 auctionId = IAuctionHouse(auctionHouseAddress).createAuction(
             _tokenId,

@@ -26,7 +26,8 @@ interface HollyPlusCuratorCreatorInterface extends ethers.utils.Interface {
     "curatorByAuctionId(uint256)": FunctionFragment;
     "finalizeAuction(uint256)": FunctionFragment;
     "logic()": FunctionFragment;
-    "startAuction(uint256,uint256,uint256,uint8,uint8)": FunctionFragment;
+    "startAuction(uint256,uint256,uint256)": FunctionFragment;
+    "startAuctionFull(uint256,uint256,uint256,uint8,uint8)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -44,6 +45,10 @@ interface HollyPlusCuratorCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "startAuction",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "startAuctionFull",
     values: [
       BigNumberish,
       BigNumberish,
@@ -68,6 +73,10 @@ interface HollyPlusCuratorCreatorInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "startAuction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "startAuctionFull",
     data: BytesLike
   ): Result;
 
@@ -136,6 +145,20 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
+      numberOfDays: BigNumberish,
+      reservePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "startAuction(uint256,uint256,uint256)"(
+      _tokenId: BigNumberish,
+      numberOfDays: BigNumberish,
+      reservePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    startAuctionFull(
+      _tokenId: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
       artistSplitOfCuratorPercentage: BigNumberish,
@@ -143,7 +166,7 @@ export class HollyPlusCuratorCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
+    "startAuctionFull(uint256,uint256,uint256,uint8,uint8)"(
       _tokenId: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
@@ -189,6 +212,20 @@ export class HollyPlusCuratorCreator extends Contract {
 
   startAuction(
     _tokenId: BigNumberish,
+    numberOfDays: BigNumberish,
+    reservePrice: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "startAuction(uint256,uint256,uint256)"(
+    _tokenId: BigNumberish,
+    numberOfDays: BigNumberish,
+    reservePrice: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  startAuctionFull(
+    _tokenId: BigNumberish,
     auctionDuration: BigNumberish,
     reservePrice: BigNumberish,
     artistSplitOfCuratorPercentage: BigNumberish,
@@ -196,7 +233,7 @@ export class HollyPlusCuratorCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "startAuction(uint256,uint256,uint256,uint8,uint8)"(
+  "startAuctionFull(uint256,uint256,uint256,uint8,uint8)"(
     _tokenId: BigNumberish,
     auctionDuration: BigNumberish,
     reservePrice: BigNumberish,
@@ -242,21 +279,35 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
-      auctionDuration: BigNumberish,
+      numberOfDays: BigNumberish,
       reservePrice: BigNumberish,
-      artistSplitOfCuratorPercentage: BigNumberish,
-      curatorFeePercentage: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<void>;
 
-    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
+    "startAuction(uint256,uint256,uint256)"(
+      _tokenId: BigNumberish,
+      numberOfDays: BigNumberish,
+      reservePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    startAuctionFull(
       _tokenId: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
       artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<void>;
+
+    "startAuctionFull(uint256,uint256,uint256,uint8,uint8)"(
+      _tokenId: BigNumberish,
+      auctionDuration: BigNumberish,
+      reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
+      curatorFeePercentage: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -304,6 +355,20 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
+      numberOfDays: BigNumberish,
+      reservePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "startAuction(uint256,uint256,uint256)"(
+      _tokenId: BigNumberish,
+      numberOfDays: BigNumberish,
+      reservePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    startAuctionFull(
+      _tokenId: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
       artistSplitOfCuratorPercentage: BigNumberish,
@@ -311,7 +376,7 @@ export class HollyPlusCuratorCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
+    "startAuctionFull(uint256,uint256,uint256,uint8,uint8)"(
       _tokenId: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
@@ -358,6 +423,20 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
+      numberOfDays: BigNumberish,
+      reservePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "startAuction(uint256,uint256,uint256)"(
+      _tokenId: BigNumberish,
+      numberOfDays: BigNumberish,
+      reservePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    startAuctionFull(
+      _tokenId: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
       artistSplitOfCuratorPercentage: BigNumberish,
@@ -365,7 +444,7 @@ export class HollyPlusCuratorCreator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
+    "startAuctionFull(uint256,uint256,uint256,uint8,uint8)"(
       _tokenId: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
