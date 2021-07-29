@@ -25,7 +25,7 @@ interface HollyPlusCuratorCreatorInterface extends ethers.utils.Interface {
     "curatorByAuctionId(uint256)": FunctionFragment;
     "finalizeAuction(uint256)": FunctionFragment;
     "logic()": FunctionFragment;
-    "startAuction(uint256,uint8,address,uint8,uint256,uint256,uint8)": FunctionFragment;
+    "startAuction(uint256,uint256,uint256,uint8,uint8)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -41,8 +41,6 @@ interface HollyPlusCuratorCreatorInterface extends ethers.utils.Interface {
     functionFragment: "startAuction",
     values: [
       BigNumberish,
-      BigNumberish,
-      string,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -65,11 +63,9 @@ interface HollyPlusCuratorCreatorInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "Constructed()": EventFragment;
     "HollyPlusCuratedAuction(address,address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Constructed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "HollyPlusCuratedAuction"): EventFragment;
 }
 
@@ -121,22 +117,18 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "startAuction(uint256,uint8,address,uint8,uint256,uint256,uint8)"(
+    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -168,22 +160,18 @@ export class HollyPlusCuratorCreator extends Contract {
 
   startAuction(
     _tokenId: BigNumberish,
-    _tokenCreatorPercentage: BigNumberish,
-    _artistPayout: string,
-    _artistPercentage: BigNumberish,
     auctionDuration: BigNumberish,
     reservePrice: BigNumberish,
+    artistSplitOfCuratorPercentage: BigNumberish,
     curatorFeePercentage: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "startAuction(uint256,uint8,address,uint8,uint256,uint256,uint8)"(
+  "startAuction(uint256,uint256,uint256,uint8,uint8)"(
     _tokenId: BigNumberish,
-    _tokenCreatorPercentage: BigNumberish,
-    _artistPayout: string,
-    _artistPercentage: BigNumberish,
     auctionDuration: BigNumberish,
     reservePrice: BigNumberish,
+    artistSplitOfCuratorPercentage: BigNumberish,
     curatorFeePercentage: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -215,32 +203,26 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "startAuction(uint256,uint8,address,uint8,uint256,uint256,uint8)"(
+    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
   };
 
   filters: {
-    Constructed(): EventFilter;
-
     HollyPlusCuratedAuction(
-      newCurator: null,
+      newCuratorAddress: null,
       creator: null,
       tokenId: null
     ): EventFilter;
@@ -273,22 +255,18 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "startAuction(uint256,uint8,address,uint8,uint256,uint256,uint8)"(
+    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -321,22 +299,18 @@ export class HollyPlusCuratorCreator extends Contract {
 
     startAuction(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "startAuction(uint256,uint8,address,uint8,uint256,uint256,uint8)"(
+    "startAuction(uint256,uint256,uint256,uint8,uint8)"(
       _tokenId: BigNumberish,
-      _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
       auctionDuration: BigNumberish,
       reservePrice: BigNumberish,
+      artistSplitOfCuratorPercentage: BigNumberish,
       curatorFeePercentage: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

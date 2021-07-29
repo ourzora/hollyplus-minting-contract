@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.5;
 
+// From partybid:
+//   https://github.com/PartyDAO/partybid/blob/main/contracts/InitializedProxy.sol 
+
 /**
  * @title InitializedProxy
  * @author Anna Carroll

@@ -73,6 +73,7 @@ contract MintableArtistCollection is
     using Counters for Counters.Counter;
     event URIBaseUpdated(string);
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    address public _artistAuctionRoyaltyAddress;
 
     Counters.Counter private _tokenIdTracker;
     string private _ipfsGatewayURL;
@@ -98,6 +99,7 @@ contract MintableArtistCollection is
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(MINTER_ROLE, _msgSender());
+        _artistAuctionRoyaltyAddress = _msgSender();
     }
 
     function setIPFSBaseURI(string memory newURI)
@@ -137,6 +139,16 @@ contract MintableArtistCollection is
         require(royaltyBPS < 10000, "Royalty needs to be less than 10000 bps");
 
         _setRoyalty(royaltyReceiver, royaltyBPS);
+    }
+
+    function getArtistAuctionRoyaltyAddress() public view override returns (address) {
+        return _artistAuctionRoyaltyAddress;
+    }
+
+    function updateArtistAuctionRoyaltyAddress(
+        address newArtistAuctionRoyaltyAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        _artistAuctionRoyaltyAddress = newArtistAuctionRoyaltyAddress;
     }
 
     /**

@@ -24,10 +24,12 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "MINTER_ROLE()": FunctionFragment;
+    "_artistAuctionRoyaltyAddress()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getArtistAuctionRoyaltyAddress()": FunctionFragment;
     "getIPFSCIDs(uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoyalties(uint256)": FunctionFragment;
@@ -52,6 +54,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "updateArtistAuctionRoyaltyAddress(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -63,6 +66,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "_artistAuctionRoyaltyAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
@@ -71,6 +78,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getArtistAuctionRoyaltyAddress",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getIPFSCIDs",
@@ -162,6 +173,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateArtistAuctionRoyaltyAddress",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "DEFAULT_ADMIN_ROLE",
@@ -171,11 +186,19 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     functionFragment: "MINTER_ROLE",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "_artistAuctionRoyaltyAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getArtistAuctionRoyaltyAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -250,6 +273,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateArtistAuctionRoyaltyAddress",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -302,6 +329,14 @@ export class MintableArtistCollection extends Contract {
       0: string;
     }>;
 
+    _artistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "_artistAuctionRoyaltyAddress()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -349,6 +384,14 @@ export class MintableArtistCollection extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      0: string;
+    }>;
+
+    getArtistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "getArtistAuctionRoyaltyAddress()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -674,6 +717,16 @@ export class MintableArtistCollection extends Contract {
       tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    updateArtistAuctionRoyaltyAddress(
+      newArtistAuctionRoyaltyAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateArtistAuctionRoyaltyAddress(address)"(
+      newArtistAuctionRoyaltyAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
@@ -683,6 +736,10 @@ export class MintableArtistCollection extends Contract {
   MINTER_ROLE(overrides?: CallOverrides): Promise<string>;
 
   "MINTER_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+  _artistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<string>;
+
+  "_artistAuctionRoyaltyAddress()"(overrides?: CallOverrides): Promise<string>;
 
   approve(
     to: string,
@@ -720,6 +777,12 @@ export class MintableArtistCollection extends Contract {
 
   "getApproved(uint256)"(
     tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getArtistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<string>;
+
+  "getArtistAuctionRoyaltyAddress()"(
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -985,6 +1048,16 @@ export class MintableArtistCollection extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  updateArtistAuctionRoyaltyAddress(
+    newArtistAuctionRoyaltyAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateArtistAuctionRoyaltyAddress(address)"(
+    newArtistAuctionRoyaltyAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
@@ -993,6 +1066,12 @@ export class MintableArtistCollection extends Contract {
     MINTER_ROLE(overrides?: CallOverrides): Promise<string>;
 
     "MINTER_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+    _artistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<string>;
+
+    "_artistAuctionRoyaltyAddress()"(
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     approve(
       to: string,
@@ -1027,6 +1106,12 @@ export class MintableArtistCollection extends Contract {
 
     "getApproved(uint256)"(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getArtistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<string>;
+
+    "getArtistAuctionRoyaltyAddress()"(
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1292,6 +1377,16 @@ export class MintableArtistCollection extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateArtistAuctionRoyaltyAddress(
+      newArtistAuctionRoyaltyAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateArtistAuctionRoyaltyAddress(address)"(
+      newArtistAuctionRoyaltyAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -1345,6 +1440,12 @@ export class MintableArtistCollection extends Contract {
 
     "MINTER_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    _artistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "_artistAuctionRoyaltyAddress()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1378,6 +1479,14 @@ export class MintableArtistCollection extends Contract {
 
     "getApproved(uint256)"(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getArtistAuctionRoyaltyAddress(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getArtistAuctionRoyaltyAddress()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1632,6 +1741,16 @@ export class MintableArtistCollection extends Contract {
       tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    updateArtistAuctionRoyaltyAddress(
+      newArtistAuctionRoyaltyAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateArtistAuctionRoyaltyAddress(address)"(
+      newArtistAuctionRoyaltyAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1646,6 +1765,14 @@ export class MintableArtistCollection extends Contract {
     MINTER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "MINTER_ROLE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _artistAuctionRoyaltyAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "_artistAuctionRoyaltyAddress()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     approve(
       to: string,
@@ -1686,6 +1813,14 @@ export class MintableArtistCollection extends Contract {
 
     "getApproved(uint256)"(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getArtistAuctionRoyaltyAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getArtistAuctionRoyaltyAddress()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1941,6 +2076,16 @@ export class MintableArtistCollection extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    updateArtistAuctionRoyaltyAddress(
+      newArtistAuctionRoyaltyAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateArtistAuctionRoyaltyAddress(address)"(
+      newArtistAuctionRoyaltyAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

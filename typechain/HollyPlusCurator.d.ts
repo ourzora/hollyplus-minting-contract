@@ -22,38 +22,18 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface HollyPlusCuratorInterface extends ethers.utils.Interface {
   functions: {
-    "artistPayout()": FunctionFragment;
-    "artistPercentage()": FunctionFragment;
     "auctionHouseContract()": FunctionFragment;
-    "auctionId()": FunctionFragment;
-    "finalize()": FunctionFragment;
-    "getBalance()": FunctionFragment;
     "hollyPlusContract()": FunctionFragment;
-    "initialize(uint256,uint8,address,uint8)": FunctionFragment;
+    "initialize(uint8,uint256)": FunctionFragment;
     "payout()": FunctionFragment;
     "payoutWETH()": FunctionFragment;
     "setAuctionAndApprove(uint256)": FunctionFragment;
-    "tokenCreatorPayout()": FunctionFragment;
-    "tokenCreatorPercentage()": FunctionFragment;
+    "tokenId()": FunctionFragment;
     "weth()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "artistPayout",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "artistPercentage",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "auctionHouseContract",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "auctionId", values?: undefined): string;
-  encodeFunctionData(functionFragment: "finalize", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getBalance",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -62,7 +42,7 @@ interface HollyPlusCuratorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [BigNumberish, BigNumberish, string, BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "payout", values?: undefined): string;
   encodeFunctionData(
@@ -73,31 +53,13 @@ interface HollyPlusCuratorInterface extends ethers.utils.Interface {
     functionFragment: "setAuctionAndApprove",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "tokenCreatorPayout",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenCreatorPercentage",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "tokenId", values?: undefined): string;
   encodeFunctionData(functionFragment: "weth", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "artistPayout",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "artistPercentage",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "auctionHouseContract",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "auctionId", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "finalize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "hollyPlusContract",
     data: BytesLike
@@ -109,14 +71,7 @@ interface HollyPlusCuratorInterface extends ethers.utils.Interface {
     functionFragment: "setAuctionAndApprove",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenCreatorPayout",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenCreatorPercentage",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "tokenId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "weth", data: BytesLike): Result;
 
   events: {
@@ -140,48 +95,12 @@ export class HollyPlusCurator extends Contract {
   interface: HollyPlusCuratorInterface;
 
   functions: {
-    artistPayout(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "artistPayout()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    artistPercentage(overrides?: CallOverrides): Promise<{
-      0: number;
-    }>;
-
-    "artistPercentage()"(overrides?: CallOverrides): Promise<{
-      0: number;
-    }>;
-
     auctionHouseContract(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
     "auctionHouseContract()"(overrides?: CallOverrides): Promise<{
       0: string;
-    }>;
-
-    auctionId(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "auctionId()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    finalize(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "finalize()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    getBalance(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getBalance()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
     }>;
 
     hollyPlusContract(overrides?: CallOverrides): Promise<{
@@ -193,18 +112,14 @@ export class HollyPlusCurator extends Contract {
     }>;
 
     initialize(
-      _tokenId: BigNumberish,
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(uint256,uint8,address,uint8)"(
-      _tokenId: BigNumberish,
+    "initialize(uint8,uint256)"(
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -226,20 +141,12 @@ export class HollyPlusCurator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    tokenCreatorPayout(overrides?: CallOverrides): Promise<{
-      0: string;
+    tokenId(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
-    "tokenCreatorPayout()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    tokenCreatorPercentage(overrides?: CallOverrides): Promise<{
-      0: number;
-    }>;
-
-    "tokenCreatorPercentage()"(overrides?: CallOverrides): Promise<{
-      0: number;
+    "tokenId()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     weth(overrides?: CallOverrides): Promise<{
@@ -251,47 +158,23 @@ export class HollyPlusCurator extends Contract {
     }>;
   };
 
-  artistPayout(overrides?: CallOverrides): Promise<string>;
-
-  "artistPayout()"(overrides?: CallOverrides): Promise<string>;
-
-  artistPercentage(overrides?: CallOverrides): Promise<number>;
-
-  "artistPercentage()"(overrides?: CallOverrides): Promise<number>;
-
   auctionHouseContract(overrides?: CallOverrides): Promise<string>;
 
   "auctionHouseContract()"(overrides?: CallOverrides): Promise<string>;
-
-  auctionId(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "auctionId()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  finalize(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "finalize()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  getBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "getBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   hollyPlusContract(overrides?: CallOverrides): Promise<string>;
 
   "hollyPlusContract()"(overrides?: CallOverrides): Promise<string>;
 
   initialize(
-    _tokenId: BigNumberish,
     _tokenCreatorPercentage: BigNumberish,
-    _artistPayout: string,
-    _artistPercentage: BigNumberish,
+    _tokenId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(uint256,uint8,address,uint8)"(
-    _tokenId: BigNumberish,
+  "initialize(uint8,uint256)"(
     _tokenCreatorPercentage: BigNumberish,
-    _artistPayout: string,
-    _artistPercentage: BigNumberish,
+    _tokenId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -313,60 +196,32 @@ export class HollyPlusCurator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  tokenCreatorPayout(overrides?: CallOverrides): Promise<string>;
+  tokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "tokenCreatorPayout()"(overrides?: CallOverrides): Promise<string>;
-
-  tokenCreatorPercentage(overrides?: CallOverrides): Promise<number>;
-
-  "tokenCreatorPercentage()"(overrides?: CallOverrides): Promise<number>;
+  "tokenId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   weth(overrides?: CallOverrides): Promise<string>;
 
   "weth()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    artistPayout(overrides?: CallOverrides): Promise<string>;
-
-    "artistPayout()"(overrides?: CallOverrides): Promise<string>;
-
-    artistPercentage(overrides?: CallOverrides): Promise<number>;
-
-    "artistPercentage()"(overrides?: CallOverrides): Promise<number>;
-
     auctionHouseContract(overrides?: CallOverrides): Promise<string>;
 
     "auctionHouseContract()"(overrides?: CallOverrides): Promise<string>;
-
-    auctionId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "auctionId()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    finalize(overrides?: CallOverrides): Promise<void>;
-
-    "finalize()"(overrides?: CallOverrides): Promise<void>;
-
-    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     hollyPlusContract(overrides?: CallOverrides): Promise<string>;
 
     "hollyPlusContract()"(overrides?: CallOverrides): Promise<string>;
 
     initialize(
-      _tokenId: BigNumberish,
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(uint256,uint8,address,uint8)"(
-      _tokenId: BigNumberish,
+    "initialize(uint8,uint256)"(
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -388,13 +243,9 @@ export class HollyPlusCurator extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    tokenCreatorPayout(overrides?: CallOverrides): Promise<string>;
+    tokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "tokenCreatorPayout()"(overrides?: CallOverrides): Promise<string>;
-
-    tokenCreatorPercentage(overrides?: CallOverrides): Promise<number>;
-
-    "tokenCreatorPercentage()"(overrides?: CallOverrides): Promise<number>;
+    "tokenId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     weth(overrides?: CallOverrides): Promise<string>;
 
@@ -406,47 +257,23 @@ export class HollyPlusCurator extends Contract {
   };
 
   estimateGas: {
-    artistPayout(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "artistPayout()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    artistPercentage(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "artistPercentage()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     auctionHouseContract(overrides?: CallOverrides): Promise<BigNumber>;
 
     "auctionHouseContract()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    auctionId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "auctionId()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    finalize(overrides?: Overrides): Promise<BigNumber>;
-
-    "finalize()"(overrides?: Overrides): Promise<BigNumber>;
-
-    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     hollyPlusContract(overrides?: CallOverrides): Promise<BigNumber>;
 
     "hollyPlusContract()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
-      _tokenId: BigNumberish,
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(uint256,uint8,address,uint8)"(
-      _tokenId: BigNumberish,
+    "initialize(uint8,uint256)"(
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -468,13 +295,9 @@ export class HollyPlusCurator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    tokenCreatorPayout(overrides?: CallOverrides): Promise<BigNumber>;
+    tokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "tokenCreatorPayout()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenCreatorPercentage(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokenCreatorPercentage()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "tokenId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     weth(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -482,16 +305,6 @@ export class HollyPlusCurator extends Contract {
   };
 
   populateTransaction: {
-    artistPayout(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "artistPayout()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    artistPercentage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "artistPercentage()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     auctionHouseContract(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -500,18 +313,6 @@ export class HollyPlusCurator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    auctionId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "auctionId()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    finalize(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "finalize()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    getBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getBalance()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     hollyPlusContract(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "hollyPlusContract()"(
@@ -519,18 +320,14 @@ export class HollyPlusCurator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      _tokenId: BigNumberish,
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(uint256,uint8,address,uint8)"(
-      _tokenId: BigNumberish,
+    "initialize(uint8,uint256)"(
       _tokenCreatorPercentage: BigNumberish,
-      _artistPayout: string,
-      _artistPercentage: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -552,21 +349,9 @@ export class HollyPlusCurator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    tokenCreatorPayout(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    tokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "tokenCreatorPayout()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenCreatorPercentage(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenCreatorPercentage()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    "tokenId()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

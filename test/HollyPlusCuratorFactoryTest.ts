@@ -93,12 +93,10 @@ describe("MintableArtistCollection", () => {
       await hollyPlusCuratorFactory.connect(signer1).startAuction(
         1,
         // silly math scaling going on here, this is 60%*this = total%
-        50,
-        signerAddress,
-        50,
         1,
         ethers.utils.parseEther("0.1"),
-        50
+        50, // artist gets 50% of 50% meaning 25%
+        50, // curator gets 50%, 25% goes to DAO, 25% goes to artist
       );
 
       // signer = 25%
@@ -139,7 +137,7 @@ describe("MintableArtistCollection", () => {
         await s3.getAddress()
       );
 
-      expect(await curator.getBalance()).to.equal(0);
+      expect(await ethers.provider.getBalance(curator.address)).to.equal(0);
 
       expect(
         parseInt(
