@@ -8,8 +8,6 @@ import { HardhatUserConfig } from "hardhat/config";
 import NETWORKS_CONFIG from "./networks.private.json";
 import apikeys from "./apikeys.private.json";
 
-// This is a sample Hardhat task. To learn how to create your own go to
-// https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
 
@@ -17,9 +15,6 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
     console.log(account.address);
   }
 });
-
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -48,6 +43,14 @@ const config: HardhatUserConfig = {
   namedAccounts: {
     deployer: 0,
     purchaser: 0,
+    weth: {
+      0: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      4: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+    },
+    auctionHouse: {
+      0: "0xE468cE99444174Bd3bBBEd09209577d25D1ad673",
+      4: "0xE7dd1252f50B3d845590Da0c5eADd985049a03ce",
+    },
   },
   solidity: {
     compilers: [

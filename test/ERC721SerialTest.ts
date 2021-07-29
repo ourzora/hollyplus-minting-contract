@@ -79,5 +79,15 @@ describe("MintableArtistCollection", () => {
         `AccessControl: account ${signer1Address.toLowerCase()} is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`
       );
     });
+    it("allows burning", async () => {
+      mintableArtistInstance.mint(
+        signer1Address,
+        "CID_TEST_METADATA",
+        "CID_TEST_CONTENT",
+        signer1Address
+      );
+      await mintableArtistInstance.burn(1);
+      await expect(mintableArtistInstance.ownerOf(1)).to.be.revertedWith("");
+    });
   });
 });

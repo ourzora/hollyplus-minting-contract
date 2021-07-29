@@ -4,7 +4,7 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
 
   await deploy("MintableArtistCollection", {
     from: deployer,
-    args: ["Test Serial", "TESTSERIAL"],
+    args: ["HollyPlus+", "HOLLYPLUS"],
     log: true,
   });
 };
