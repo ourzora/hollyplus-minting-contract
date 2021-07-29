@@ -96,7 +96,7 @@ describe("MintableArtistCollection", () => {
         1,
         ethers.utils.parseEther("0.1"),
         50, // artist gets 50% of 50% meaning 25%
-        50, // curator gets 50%, 25% goes to DAO, 25% goes to artist
+        50 // curator gets 50%, 25% goes to DAO, 25% goes to artist
       );
 
       // signer = 25%
@@ -131,7 +131,8 @@ describe("MintableArtistCollection", () => {
       await ethers.provider.send("evm_setNextBlockTimestamp", [9617249934]);
 
       // finalize the auction via the proxy
-      await hollyPlusCuratorFactory.finalizeAuction(0);
+      // await hollyPlusCuratorFactory.finalizeAuction(0);
+      await auctionHouse.endAuction(0);
 
       expect(await mintableArtistInstance.ownerOf(1)).to.equal(
         await s3.getAddress()
@@ -154,6 +155,52 @@ describe("MintableArtistCollection", () => {
         )
         // sub one eth gas
       ).to.be.approximately(25, 0.1);
+    });
+
+    it("cancels an auction", async () => {
+      await mintableArtistInstance
+        .connect(signer1)
+        .setApprovalForAll(auctionHouse.address, true);
+
+      await mintableArtistInstance
+        .connect(signer1)
+        .approve(hollyPlusCuratorFactory.address, 1);
+
+      await hollyPlusCuratorFactory.connect(signer1).startAuction(
+        1,
+        1,
+        ethers.utils.parseEther("0.1"),
+        50, // artist gets 50% of 50% meaning 25%
+        50 // curator gets 50%, 25% goes to DAO, 25% goes to artist
+      );
+
+      await hollyPlusCuratorFactory.cancelAuction(0);
+      expect(await mintableArtistInstance.ownerOf(1)).to.equal(signer1Address);
+    });
+
+    it("cannot call cancel directly", async () => {
+      await mintableArtistInstance
+        .connect(signer1)
+        .setApprovalForAll(auctionHouse.address, true);
+
+      await mintableArtistInstance
+        .connect(signer1)
+        .approve(hollyPlusCuratorFactory.address, 1);
+
+      await hollyPlusCuratorFactory.connect(signer1).startAuction(
+        1,
+        1,
+        ethers.utils.parseEther("0.1"),
+        50, // artist gets 50% of 50% meaning 25%
+        50 // curator gets 50%, 25% goes to DAO, 25% goes to artist
+      );
+
+      const curatorContract = (await ethers.getContractAt(
+        "HollyPlusCurator",
+        await hollyPlusCuratorFactory.curatorByAuctionId(0),
+        signer
+      )) as HollyPlusCurator;
+      await expect(curatorContract.cancelAuction(0)).to.be.revertedWith('internal only');
     });
   });
 });

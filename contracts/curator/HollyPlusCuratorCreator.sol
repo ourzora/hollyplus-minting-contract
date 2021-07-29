@@ -77,7 +77,8 @@ contract HollyPlusCuratorCreator {
             new HollyPlusCurator(
                 _wethAddress,
                 _auctionHouseAddress,
-                _hollyPlusContract
+                _hollyPlusContract,
+                address(this)
             )
         );
     }
@@ -123,10 +124,20 @@ contract HollyPlusCuratorCreator {
         return address(hollyPlusCuratorProxy);
     }
 
+    // This combines the finalizeAuction and payout steps in one.
+    // this will fail if the auction is not curated by this smart contract.
     function finalizeAuction(uint256 _auctionId) public {
+        HollyPlusCurator curator = curatorByAuctionId[_auctionId];
         if (IAuctionHouse(auctionHouseAddress).auctions(_auctionId).approved) {
             IAuctionHouse(auctionHouseAddress).endAuction(_auctionId);
         }
-        curatorByAuctionId[_auctionId].payout();
+        curator.payout();
+    }
+
+    // only the curator or creator can cancel the auction
+    // this contract is the creator, the curator is the child contract
+    // this will fail if the auction is not curated by this smart contract.
+    function cancelAuction(uint256 _auctionId) public {
+        curatorByAuctionId[_auctionId].cancelAuction(_auctionId);
     }
 }

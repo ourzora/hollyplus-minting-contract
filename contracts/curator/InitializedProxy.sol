@@ -2,7 +2,7 @@
 pragma solidity 0.8.5;
 
 // From partybid:
-//   https://github.com/PartyDAO/partybid/blob/main/contracts/InitializedProxy.sol 
+//   https://github.com/PartyDAO/partybid/blob/main/contracts/InitializedProxy.sol
 
 /**
  * @title InitializedProxy
@@ -14,14 +14,12 @@ contract InitializedProxy {
 
     // ======== Constructor =========
 
-    constructor(
-        address _logic,
-        bytes memory _initializationCalldata
-    ) {
+    constructor(address _logic, bytes memory _initializationCalldata) {
         logic = _logic;
         // Delegatecall into the logic contract, supplying initialization calldata
-        (bool _ok, bytes memory returnData) =
-            _logic.delegatecall(_initializationCalldata);
+        (bool _ok, bytes memory returnData) = _logic.delegatecall(
+            _initializationCalldata
+        );
         // Revert if delegatecall to implementation reverts
         require(_ok, string(returnData));
     }
@@ -29,6 +27,16 @@ contract InitializedProxy {
     // ======== Fallback =========
 
     fallback() external payable {
+        _paycallback();
+    }
+
+    // ======== Receive =========
+
+    receive() external payable {
+        _paycallback();
+    }
+
+    function _paycallback() public payable {
         address _impl = logic;
         assembly {
             let ptr := mload(0x40)
@@ -38,16 +46,13 @@ contract InitializedProxy {
             returndatacopy(ptr, 0, size)
 
             switch result
-                case 0 {
-                    revert(ptr, size)
-                }
-                default {
-                    return(ptr, size)
-                }
+            case 0 {
+                revert(ptr, size)
+            }
+            default {
+                return(ptr, size)
+            }
         }
     }
 
-    // ======== Receive =========
-
-    receive() external payable {} // solhint-disable-line no-empty-blocks
 }

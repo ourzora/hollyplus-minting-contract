@@ -60,6 +60,7 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
     address public immutable auctionHouseContract;
     address public immutable weth;
     address public immutable hollyPlusContract;
+    address public immutable curatorCreatorContract;
 
     // ============ Public Not-Mutated Storage ============
     uint256 public tokenId;
@@ -69,10 +70,12 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
     constructor(
         address _weth,
         address _auctionHouseContract,
-        address _hollyPlusContract
+        address _hollyPlusContract,
+        address _curatorCreatorContract
     ) {
         auctionHouseContract = _auctionHouseContract;
         hollyPlusContract = _hollyPlusContract;
+        curatorCreatorContract = _curatorCreatorContract;
         weth = _weth;
     }
 
@@ -133,7 +136,13 @@ contract HollyPlusCurator is ReentrancyGuardUpgradeable {
     }
 
     function setAuctionAndApprove(uint256 _auctionId) public {
+        require(msg.sender == curatorCreatorContract, "internal only");
         IAuctionHouse(auctionHouseContract).setAuctionApproval(_auctionId, true);
+    }
+
+    function cancelAuction(uint256 _auctionId) public {
+        require(msg.sender == curatorCreatorContract, "internal only");
+        IAuctionHouse(auctionHouseContract).cancelAuction(_auctionId);
     }
 
     // ============ Internal: TransferEthOrWeth ============

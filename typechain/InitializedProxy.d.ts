@@ -13,6 +13,7 @@ import {
 import {
   Contract,
   ContractTransaction,
+  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -21,11 +22,20 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface InitializedProxyInterface extends ethers.utils.Interface {
   functions: {
+    "_paycallback()": FunctionFragment;
     "logic()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "_paycallback",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "logic", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "_paycallback",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "logic", data: BytesLike): Result;
 
   events: {};
@@ -45,6 +55,12 @@ export class InitializedProxy extends Contract {
   interface: InitializedProxyInterface;
 
   functions: {
+    _paycallback(overrides?: PayableOverrides): Promise<ContractTransaction>;
+
+    "_paycallback()"(
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
     logic(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -54,11 +70,19 @@ export class InitializedProxy extends Contract {
     }>;
   };
 
+  _paycallback(overrides?: PayableOverrides): Promise<ContractTransaction>;
+
+  "_paycallback()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
+
   logic(overrides?: CallOverrides): Promise<string>;
 
   "logic()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    _paycallback(overrides?: CallOverrides): Promise<void>;
+
+    "_paycallback()"(overrides?: CallOverrides): Promise<void>;
+
     logic(overrides?: CallOverrides): Promise<string>;
 
     "logic()"(overrides?: CallOverrides): Promise<string>;
@@ -67,12 +91,22 @@ export class InitializedProxy extends Contract {
   filters: {};
 
   estimateGas: {
+    _paycallback(overrides?: PayableOverrides): Promise<BigNumber>;
+
+    "_paycallback()"(overrides?: PayableOverrides): Promise<BigNumber>;
+
     logic(overrides?: CallOverrides): Promise<BigNumber>;
 
     "logic()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    _paycallback(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
+
+    "_paycallback()"(
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
     logic(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "logic()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;

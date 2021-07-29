@@ -23,6 +23,8 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface HollyPlusCuratorInterface extends ethers.utils.Interface {
   functions: {
     "auctionHouseContract()": FunctionFragment;
+    "cancelAuction(uint256)": FunctionFragment;
+    "curatorCreatorContract()": FunctionFragment;
     "hollyPlusContract()": FunctionFragment;
     "initialize(uint8,uint256)": FunctionFragment;
     "payout()": FunctionFragment;
@@ -34,6 +36,14 @@ interface HollyPlusCuratorInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "auctionHouseContract",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelAuction",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "curatorCreatorContract",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -58,6 +68,14 @@ interface HollyPlusCuratorInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(
     functionFragment: "auctionHouseContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelAuction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "curatorCreatorContract",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -100,6 +118,24 @@ export class HollyPlusCurator extends Contract {
     }>;
 
     "auctionHouseContract()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    cancelAuction(
+      _auctionId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "cancelAuction(uint256)"(
+      _auctionId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    curatorCreatorContract(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "curatorCreatorContract()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -162,6 +198,20 @@ export class HollyPlusCurator extends Contract {
 
   "auctionHouseContract()"(overrides?: CallOverrides): Promise<string>;
 
+  cancelAuction(
+    _auctionId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "cancelAuction(uint256)"(
+    _auctionId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  curatorCreatorContract(overrides?: CallOverrides): Promise<string>;
+
+  "curatorCreatorContract()"(overrides?: CallOverrides): Promise<string>;
+
   hollyPlusContract(overrides?: CallOverrides): Promise<string>;
 
   "hollyPlusContract()"(overrides?: CallOverrides): Promise<string>;
@@ -208,6 +258,20 @@ export class HollyPlusCurator extends Contract {
     auctionHouseContract(overrides?: CallOverrides): Promise<string>;
 
     "auctionHouseContract()"(overrides?: CallOverrides): Promise<string>;
+
+    cancelAuction(
+      _auctionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "cancelAuction(uint256)"(
+      _auctionId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    curatorCreatorContract(overrides?: CallOverrides): Promise<string>;
+
+    "curatorCreatorContract()"(overrides?: CallOverrides): Promise<string>;
 
     hollyPlusContract(overrides?: CallOverrides): Promise<string>;
 
@@ -261,6 +325,20 @@ export class HollyPlusCurator extends Contract {
 
     "auctionHouseContract()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    cancelAuction(
+      _auctionId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "cancelAuction(uint256)"(
+      _auctionId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    curatorCreatorContract(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "curatorCreatorContract()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     hollyPlusContract(overrides?: CallOverrides): Promise<BigNumber>;
 
     "hollyPlusContract()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -310,6 +388,24 @@ export class HollyPlusCurator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "auctionHouseContract()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    cancelAuction(
+      _auctionId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "cancelAuction(uint256)"(
+      _auctionId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    curatorCreatorContract(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "curatorCreatorContract()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
