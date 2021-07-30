@@ -4,25 +4,24 @@ pragma solidity 0.8.5;
 
 import "@openzeppelin/contracts2/utils/introspection/ERC165.sol";
 
-import "./IRaribleRoyalties.sol";
-import "./RoyaltyConfig.sol";
 import "./IERC2981.sol";
 
-contract RoyaltyConfig is IERC2981, IRaribleRoyalites, ERC165 {
+contract RoyaltyConfig is IERC2981, ERC165 {
     event UpdatedRoyalty(address recipient, uint256 bps);
 
     struct RoyaltyInfo {
         uint256 bps;
         address receiver;
     }
-    RoyaltyInfo royalty;
+    mapping(uint256 => RoyaltyInfo) royalities;
 
-    function _setRoyalty(
+    function _setRoyaltyForToken(
         address royaltyReciever,
-        uint256 royaltyBPS
+        uint256 royaltyBPS,
+        uint256 tokenId
     ) internal virtual {
         emit UpdatedRoyalty(royaltyReciever, royaltyBPS);
-        royalty = RoyaltyInfo({
+        royalities[tokenId] = RoyaltyInfo({
             receiver: royaltyReciever,
             bps: royaltyBPS
         });
@@ -42,23 +41,11 @@ contract RoyaltyConfig is IERC2981, IRaribleRoyalites, ERC165 {
         override(IERC2981)
         returns (address receiver, uint256 royaltyAmount)
     {
+        RoyaltyInfo memory royalty = royalities[tokenId];
         return (
             royalty.receiver,
             (salePrice * royalty.bps) * (100 * PERCENTAGE_SCALE)
         );
-    }
-
-    // rarible api
-    function getRoyalties(uint256 tokenId)
-        external
-        view
-        override(IRaribleRoyalites)
-        returns (LibPart.Part[] memory)
-    {
-        LibPart.Part[] memory result = new LibPart.Part[](1);
-        result[0].account = payable(royalty.receiver);
-        result[0].value = uint96(royalty.bps);
-        return result;
     }
 
     /*

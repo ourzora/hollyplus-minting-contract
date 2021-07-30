@@ -27,7 +27,5 @@ export { FundsRecoverableFactory } from "./FundsRecoverableFactory";
 export type { FundsRecoverable } from "./FundsRecoverable";
 export { MintableArtistCollectionFactory } from "./MintableArtistCollectionFactory";
 export type { MintableArtistCollection } from "./MintableArtistCollection";
-export { LibPartFactory } from "./LibPartFactory";
-export type { LibPart } from "./LibPart";
 export { RoyaltyConfigFactory } from "./RoyaltyConfigFactory";
 export type { RoyaltyConfig } from "./RoyaltyConfig";

@@ -21,15 +21,10 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface RoyaltyConfigInterface extends ethers.utils.Interface {
   functions: {
-    "getRoyalties(uint256)": FunctionFragment;
     "royaltyInfo(uint256,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "getRoyalties",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "royaltyInfo",
     values: [BigNumberish, BigNumberish]
@@ -39,10 +34,6 @@ interface RoyaltyConfigInterface extends ethers.utils.Interface {
     values: [BytesLike]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "getRoyalties",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "royaltyInfo",
     data: BytesLike
@@ -73,20 +64,6 @@ export class RoyaltyConfig extends Contract {
   interface: RoyaltyConfigInterface;
 
   functions: {
-    getRoyalties(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: { account: string; value: BigNumber; 0: string; 1: BigNumber }[];
-    }>;
-
-    "getRoyalties(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: { account: string; value: BigNumber; 0: string; 1: BigNumber }[];
-    }>;
-
     royaltyInfo(
       tokenId: BigNumberish,
       salePrice: BigNumberish,
@@ -124,16 +101,6 @@ export class RoyaltyConfig extends Contract {
     }>;
   };
 
-  getRoyalties(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{ account: string; value: BigNumber; 0: string; 1: BigNumber }[]>;
-
-  "getRoyalties(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{ account: string; value: BigNumber; 0: string; 1: BigNumber }[]>;
-
   royaltyInfo(
     tokenId: BigNumberish,
     salePrice: BigNumberish,
@@ -167,20 +134,6 @@ export class RoyaltyConfig extends Contract {
   ): Promise<boolean>;
 
   callStatic: {
-    getRoyalties(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      { account: string; value: BigNumber; 0: string; 1: BigNumber }[]
-    >;
-
-    "getRoyalties(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      { account: string; value: BigNumber; 0: string; 1: BigNumber }[]
-    >;
-
     royaltyInfo(
       tokenId: BigNumberish,
       salePrice: BigNumberish,
@@ -219,16 +172,6 @@ export class RoyaltyConfig extends Contract {
   };
 
   estimateGas: {
-    getRoyalties(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getRoyalties(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     royaltyInfo(
       tokenId: BigNumberish,
       salePrice: BigNumberish,
@@ -253,16 +196,6 @@ export class RoyaltyConfig extends Contract {
   };
 
   populateTransaction: {
-    getRoyalties(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getRoyalties(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     royaltyInfo(
       tokenId: BigNumberish,
       salePrice: BigNumberish,
