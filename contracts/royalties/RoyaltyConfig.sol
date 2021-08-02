@@ -7,27 +7,35 @@ import "@openzeppelin/contracts2/utils/introspection/ERC165.sol";
 import "./IERC2981.sol";
 
 contract RoyaltyConfig is IERC2981, ERC165 {
-    event UpdatedRoyalty(address recipient, uint256 bps);
+    uint256 private constant PERCENTAGE_SCALE = 10e5;
+    event UpdatedRoyalty(address indexed recipient, uint256 indexed bps, uint256 indexed tokenId);
 
     struct RoyaltyInfo {
         uint256 bps;
         address receiver;
     }
-    mapping(uint256 => RoyaltyInfo) royalities;
+
+    mapping(uint256 => RoyaltyInfo) public royalities;
+
+    function _setRoyaltyPayoutAddressForToken(
+        address royaltyReciever,
+        uint256 tokenId,
+    ) internal virtual {
+        emit UpdatedRoyalty(tokenId, royaltyReciever, royalities[tokenId].bps);
+        royalities[tokenId].receiver = royaltyReciever;
+    }
 
     function _setRoyaltyForToken(
         address royaltyReciever,
         uint256 royaltyBPS,
         uint256 tokenId
     ) internal virtual {
-        emit UpdatedRoyalty(royaltyReciever, royaltyBPS);
+        emit UpdatedRoyalty(tokenId, royaltyReciever, royaltyBPS);
         royalities[tokenId] = RoyaltyInfo({
             receiver: royaltyReciever,
             bps: royaltyBPS
         });
     }
-
-    uint256 private constant PERCENTAGE_SCALE = 10e5;
 
     /// @notice Called with the sale price to determine how much royalty
     //          is owed and to whom.
@@ -48,10 +56,6 @@ contract RoyaltyConfig is IERC2981, ERC165 {
         );
     }
 
-    /*
-     * bytes4(keccak256('getRoyalties(LibAsset.AssetType)')) == 0x44c74bcc
-     */
-    bytes4 private constant _INTERFACE_ID_ROYALTIES = 0x44c74bcc;
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
     function supportsInterface(bytes4 interfaceId)
@@ -62,7 +66,6 @@ contract RoyaltyConfig is IERC2981, ERC165 {
         returns (bool)
     {
         return
-            interfaceId == _INTERFACE_ID_ROYALTIES ||
             interfaceId == _INTERFACE_ID_ERC2981 ||
             super.supportsInterface(interfaceId);
     }
