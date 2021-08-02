@@ -71,15 +71,18 @@ contract MintableArtistCollection is
     ERC721Burnable
 {
     using Counters for Counters.Counter;
-    event URIBaseUpdated(string);
+    event URIsUpdated(uint256, string, string);
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
     address public _artistAuctionRoyaltyAddress;
 
     Counters.Counter private _tokenIdTracker;
     string private _ipfsGatewayURL;
     struct TokenInfo {
-        string metadataCID;
-        string contentCID;
+        string metadataURI;
+        bytes32 metadataHash;
+        string contentURI;
+        bytes32 contentHash;
         address submitterAddress;
     }
     mapping(uint256 => TokenInfo) private tokenInfo;
@@ -92,31 +95,30 @@ contract MintableArtistCollection is
      * See {ERC721-tokenURI}.
      */
     constructor(string memory name, string memory symbol) ERC721(name, symbol) {
-        _ipfsGatewayURL = "ipfs://";
-
         // start at token 1 not 0
         _tokenIdTracker.increment();
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(MINTER_ROLE, _msgSender());
+        _setupRole(MAINTAINER_ROLE, _msgSender());
         _artistAuctionRoyaltyAddress = _msgSender();
     }
 
-    function setIPFSBaseURI(string memory newURI)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        _ipfsGatewayURL = newURI;
-        emit URIBaseUpdated(newURI);
-    }
-
-    function getIPFSCIDs(uint256 tokenId)
+    function getURIs(uint256 tokenId)
         public
         view
-        returns (string memory, string memory)
+        returns (string memory, bytes32, string memory, bytes32)
     {
-        TokenInfo memory tokenData = tokenInfo[tokenId];
-        return (tokenData.metadataCID, tokenData.contentCID);
+        TokenInfo memory info = tokenInfo[tokenId];
+        return (info.metadataURI, info.metadataHash, info.contentURI, info.contentHash);
+    }
+    
+    function getContentURI(uint256 tokenId)
+        public
+        view
+        returns (string memory)
+    {
+        return tokenInfo[tokenId].contentURI;
     }
 
     function getSubmitterPayoutInformation(uint256 tokenId)
@@ -132,23 +134,13 @@ contract MintableArtistCollection is
         return tokenInfo[tokenId].submitterAddress;
     }
 
-    function setRoyaltyInfo(address royaltyReceiver, uint256 royaltyBPS)
+    function getArtistAuctionRoyaltyAddress()
         public
-        onlyRole(DEFAULT_ADMIN_ROLE)
+        view
+        override
+        returns (address)
     {
-        require(royaltyBPS < 10000, "Royalty needs to be less than 10000 bps");
-
-        _setRoyalty(royaltyReceiver, royaltyBPS);
-    }
-
-    function getArtistAuctionRoyaltyAddress() public view override returns (address) {
         return _artistAuctionRoyaltyAddress;
-    }
-
-    function updateArtistAuctionRoyaltyAddress(
-        address newArtistAuctionRoyaltyAddress
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        _artistAuctionRoyaltyAddress = newArtistAuctionRoyaltyAddress;
     }
 
     /**
@@ -164,19 +156,45 @@ contract MintableArtistCollection is
      */
     function mint(
         address to,
-        string memory metadataCID,
-        string memory contentCID,
-        address submitterAddress
+        string memory metadataURI,
+        bytes32 metadataHash,
+        string memory contentURI,
+        bytes32 contentHash,
+        address submitterAddress,
+        address royaltyPayoutAddress,
+        uint256 royaltyBPS
     ) public onlyRole(MINTER_ROLE) {
-        // We cannot just use balanceOf to create the new tokenId because tokens
-        // can be burned (destroyed), so we need a separate counter.
-        _mint(to, _tokenIdTracker.current());
-        tokenInfo[_tokenIdTracker.current()] = TokenInfo({
-            metadataCID: metadataCID,
-            contentCID: contentCID,
+        require(royaltyBPS < 10000, "Royalty needs to be less than 10000 bps");
+        uint256 tokenId = _tokenIdTracker.current();
+        _mint(to, tokenId);
+        tokenInfo[tokenId] = TokenInfo({
+            metadataURI: metadataURI,
+            metadataHash: metadataHash,
+            contentURI: contentURI,
+            contentHash: contentHash,
             submitterAddress: submitterAddress
         });
+        _setRoyaltyForToken(royaltyPayoutAddress, royaltyBPS, tokenId);
         _tokenIdTracker.increment();
+    }
+
+    function updateRoyaltyInfo(
+        address royaltyPayoutAddress,
+        uint256 royaltyBPS,
+        uint256 tokenId
+    ) public onlyRole(MAINTAINER_ROLE) {
+        require(royaltyBPS < 10000, "Royalty needs to be less than 10000 bps");
+        _setRoyaltyForToken(royaltyPayoutAddress, royaltyBPS, tokenId);
+    }
+
+    function updateTokenURIs(
+        uint256 tokenId,
+        string memory metadataURI,
+        string memory contentURI
+    ) public onlyRole(MAINTAINER_ROLE) {
+        tokenInfo[tokenId].metadataURI = metadataURI;
+        tokenInfo[tokenId].contentURI = contentURI;
+        emit URIsUpdated(tokenId, metadataURI, contentURI);
     }
 
     function tokenURI(uint256 tokenId)
@@ -190,13 +208,7 @@ contract MintableArtistCollection is
             "ERC721Metadata: URI query for nonexistent token"
         );
 
-        return
-            string(
-                abi.encodePacked(
-                    _ipfsGatewayURL,
-                    tokenInfo[tokenId].metadataCID
-                )
-            );
+        return tokenInfo[tokenId].metadataURI;
     }
 
     // Needed to call multiple supers.

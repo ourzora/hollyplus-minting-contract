@@ -33,9 +33,13 @@ describe("MintableArtistCollection", () => {
     it("creates a NFT", async () => {
       await mintableArtistInstance.mint(
         signer1Address,
-        "CID_TEST_METADATA",
-        "CID_TEST_CONTENT",
-        signer1Address
+        "ipfs://CID_TEST_METADATA",
+        "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+        "ipfs://CID_TEST_CONTENT",
+        "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+        signer1Address,
+        signerAddress,
+        100
       );
 
       const owner = await mintableArtistInstance.ownerOf(1);
@@ -44,12 +48,16 @@ describe("MintableArtistCollection", () => {
       const tokenURI = await mintableArtistInstance.tokenURI(1);
       expect(tokenURI).to.equal("ipfs://CID_TEST_METADATA");
     });
-    it("allows base url updates from owner", async () => {
+    it("allows base url updates from MAINTAINER role", async () => {
       await mintableArtistInstance.mint(
         signer1Address,
-        "CID_TEST_METADATA",
-        "CID_TEST_CONTENT",
-        signer1Address
+        "ipfs://CID_TEST_METADATA",
+        "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+        "ipfs://CID_TEST_CONTENT",
+        "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+        signer1Address,
+        signerAddress,
+        100
       );
 
       const owner = await mintableArtistInstance.ownerOf(1);
@@ -59,10 +67,14 @@ describe("MintableArtistCollection", () => {
       expect(tokenURI).to.equal("ipfs://CID_TEST_METADATA");
 
       expect(
-        await mintableArtistInstance.setIPFSBaseURI("https://ipfs.io/ipfs/")
-      ).to.emit(mintableArtistInstance, "URIBaseUpdated");
+        await mintableArtistInstance.updateTokenURIs(
+          1,
+          "https://ipfs.io/ipfs/IPFS_CID_META",
+          "https://ipfs.io/ipfs/IPFS_CID_CONTENT"
+        )
+      ).to.emit(mintableArtistInstance, "URIsUpdated");
       expect(await mintableArtistInstance.tokenURI(1)).to.equal(
-        "https://ipfs.io/ipfs/CID_TEST_METADATA"
+        "https://ipfs.io/ipfs/IPFS_CID_META"
       );
     });
     it("does not allow non-creators to mint an nft", async () => {
@@ -71,22 +83,30 @@ describe("MintableArtistCollection", () => {
           .connect(signer1)
           .mint(
             signer1Address,
-            "CID_TEST_METADATA",
-            "CID_TEST_CONTENT",
-            signer1Address
+            "ipfs://CID_TEST_METADATA",
+            "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+            "ipfs://CID_TEST_CONTENT",
+            "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+            signer1Address,
+            signerAddress,
+            100
           )
       ).to.be.revertedWith(
         `AccessControl: account ${signer1Address.toLowerCase()} is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`
       );
     });
     it("allows burning", async () => {
-      mintableArtistInstance.mint(
+      await mintableArtistInstance.mint(
         signer1Address,
-        "CID_TEST_METADATA",
-        "CID_TEST_CONTENT",
-        signer1Address
+        "ipfs://CID_TEST_METADATA",
+        "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+        "ipfs://CID_TEST_CONTENT",
+        "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+        signer1Address,
+        signerAddress,
+        100
       );
-      await mintableArtistInstance.burn(1);
+      await mintableArtistInstance.connect(signer1).burn(1);
       await expect(mintableArtistInstance.ownerOf(1)).to.be.revertedWith("");
     });
   });
