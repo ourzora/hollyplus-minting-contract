@@ -30,9 +30,7 @@
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^2.1.4",
-    "@openzeppelin/contracts": "^3.2.0",
-    "@openzeppelin/contracts-upgradeable2": "npm:@openzeppelin/contracts-upgradeable@^4.2.0",
-    "@openzeppelin/contracts2": "npm:@openzeppelin/contracts@^4.2.0",
+    "@openzeppelin/contracts": "openzeppelin/contracts@^4.2.0",
     "@zoralabs/auction-house": "^1.1.3",
     "hardhat-deploy": "^0.8.11",
     "hardhat-typechain": "^0.3.5"

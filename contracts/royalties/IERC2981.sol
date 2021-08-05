@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.5;
 
-import "@openzeppelin/contracts2/utils/introspection/IERC165.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 ///
 /// @dev Interface for the NFT Royalty Standard

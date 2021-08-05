@@ -40,12 +40,12 @@
 
 pragma solidity 0.8.5;
 
-import "@openzeppelin/contracts2/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts2/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts2/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts2/access/AccessControl.sol";
-import "@openzeppelin/contracts2/utils/Context.sol";
-import "@openzeppelin/contracts2/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "./royalties/RoyaltyConfig.sol";
 import "./utils/ISubmitterPayoutInformation.sol";
 
@@ -78,7 +78,6 @@ contract MintableArtistCollection is
     bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
 
     Counters.Counter private _tokenIdTracker;
-    string private _ipfsGatewayURL;
     struct TokenInfo {
         bytes32 metadataHash;
         bytes32 contentHash;
@@ -171,8 +170,8 @@ contract MintableArtistCollection is
     }
 
     function updateRoyaltyInfo(
-        address royaltyPayoutAddress,
-        uint256 tokenId
+        uint256 tokenId,
+        address royaltyPayoutAddress
     ) public onlyRole(MAINTAINER_ROLE) {
         _setRoyaltyPayoutForToken(royaltyPayoutAddress, tokenId);
     }
@@ -218,6 +217,6 @@ contract MintableArtistCollection is
         override(AccessControl, ERC721, ERC721Enumerable, RoyaltyConfig)
         returns (bool)
     {
-        return super.supportsInterface(interfaceId);
+        return super.supportsInterface(interfaceId) || interfaceId == type(ISubmitterPayoutInformation);
     }
 }
