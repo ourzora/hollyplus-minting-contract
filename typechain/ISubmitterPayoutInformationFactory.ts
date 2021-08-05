@@ -29,7 +29,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "getSubmitterPayoutInformation",
+    name: "submitter",
     outputs: [
       {
         internalType: "address",

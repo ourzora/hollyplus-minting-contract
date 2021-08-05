@@ -21,18 +21,15 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface ISubmitterPayoutInformationInterface extends ethers.utils.Interface {
   functions: {
-    "getSubmitterPayoutInformation(uint256)": FunctionFragment;
+    "submitter(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "getSubmitterPayoutInformation",
+    functionFragment: "submitter",
     values: [BigNumberish]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "getSubmitterPayoutInformation",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "submitter", data: BytesLike): Result;
 
   events: {};
 }
@@ -51,14 +48,14 @@ export class ISubmitterPayoutInformation extends Contract {
   interface: ISubmitterPayoutInformationInterface;
 
   functions: {
-    getSubmitterPayoutInformation(
+    submitter(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "getSubmitterPayoutInformation(uint256)"(
+    "submitter(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
@@ -66,23 +63,20 @@ export class ISubmitterPayoutInformation extends Contract {
     }>;
   };
 
-  getSubmitterPayoutInformation(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  submitter(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  "getSubmitterPayoutInformation(uint256)"(
+  "submitter(uint256)"(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
   callStatic: {
-    getSubmitterPayoutInformation(
+    submitter(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "getSubmitterPayoutInformation(uint256)"(
+    "submitter(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -91,24 +85,24 @@ export class ISubmitterPayoutInformation extends Contract {
   filters: {};
 
   estimateGas: {
-    getSubmitterPayoutInformation(
+    submitter(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getSubmitterPayoutInformation(uint256)"(
+    "submitter(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    getSubmitterPayoutInformation(
+    submitter(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getSubmitterPayoutInformation(uint256)"(
+    "submitter(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

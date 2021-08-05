@@ -31,7 +31,6 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "contentURI(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
-    "getSubmitterPayoutInformation(uint256)": FunctionFragment;
     "getURIs(uint256)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
@@ -45,6 +44,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "royaltyInfo(uint256,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "submitter(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
@@ -85,10 +85,6 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
     values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSubmitterPayoutInformation",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getURIs",
@@ -149,6 +145,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "submitter",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -206,10 +206,6 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSubmitterPayoutInformation",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getURIs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
@@ -238,6 +234,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "submitter", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -403,20 +400,6 @@ export class MintableArtistCollection extends Contract {
 
     "getRoleAdmin(bytes32)"(
       role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getSubmitterPayoutInformation(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getSubmitterPayoutInformation(uint256)"(
-      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -625,6 +608,20 @@ export class MintableArtistCollection extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    submitter(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "submitter(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -802,16 +799,6 @@ export class MintableArtistCollection extends Contract {
 
   "getRoleAdmin(bytes32)"(
     role: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getSubmitterPayoutInformation(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "getSubmitterPayoutInformation(uint256)"(
-    tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -999,6 +986,13 @@ export class MintableArtistCollection extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  submitter(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  "submitter(uint256)"(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -1149,16 +1143,6 @@ export class MintableArtistCollection extends Contract {
 
     "getRoleAdmin(bytes32)"(
       role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getSubmitterPayoutInformation(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getSubmitterPayoutInformation(uint256)"(
-      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1345,6 +1329,16 @@ export class MintableArtistCollection extends Contract {
       approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    submitter(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "submitter(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -1559,16 +1553,6 @@ export class MintableArtistCollection extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSubmitterPayoutInformation(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getSubmitterPayoutInformation(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getURIs(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1724,6 +1708,16 @@ export class MintableArtistCollection extends Contract {
       operator: string,
       approved: boolean,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    submitter(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "submitter(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     supportsInterface(
@@ -1898,16 +1892,6 @@ export class MintableArtistCollection extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSubmitterPayoutInformation(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getSubmitterPayoutInformation(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getURIs(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -2063,6 +2047,16 @@ export class MintableArtistCollection extends Contract {
       operator: string,
       approved: boolean,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    submitter(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "submitter(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(

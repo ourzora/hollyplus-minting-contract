@@ -42,7 +42,7 @@ pragma solidity 0.8.5;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -50,7 +50,8 @@ import "./royalties/RoyaltyConfig.sol";
 import "./utils/ISubmitterPayoutInformation.sol";
 
 /**
- * author: iain iain@zora.co
+ * author: iain
+ * org: zora
  * project: holly+ artist contract
  *
  *
@@ -69,6 +70,7 @@ import "./utils/ISubmitterPayoutInformation.sol";
 contract MintableArtistCollection is
     Context,
     AccessControl,
+    ERC721,
     ERC721Enumerable,
     RoyaltyConfig,
     ISubmitterPayoutInformation
