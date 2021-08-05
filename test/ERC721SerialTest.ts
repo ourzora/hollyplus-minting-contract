@@ -47,6 +47,17 @@ describe("MintableArtistCollection", () => {
 
       const tokenURI = await mintableArtistInstance.tokenURI(1);
       expect(tokenURI).to.equal("ipfs://CID_TEST_METADATA");
+
+      expect(await mintableArtistInstance.submitter(1)).to.be.equal(
+        signer1Address
+      );
+
+      expect(
+        await mintableArtistInstance.royaltyInfo(
+          1,
+          ethers.utils.parseEther("1")
+        )
+      ).to.equal(null);
     });
     it("allows base url updates from MAINTAINER role", async () => {
       await mintableArtistInstance.mint(

@@ -23,21 +23,24 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IwethInterface extends ethers.utils.Interface {
   functions: {
-    "balanceOf(address)": FunctionFragment;
     "deposit()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transfer",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [BigNumberish]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {};
 }
@@ -56,20 +59,6 @@ export class Iweth extends Contract {
   interface: IwethInterface;
 
   functions: {
-    balanceOf(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "balanceOf(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
     deposit(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
@@ -85,14 +74,17 @@ export class Iweth extends Contract {
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    withdraw(
+      wad: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "withdraw(uint256)"(
+      wad: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
-
-  balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "balanceOf(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   deposit(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
@@ -110,14 +102,17 @@ export class Iweth extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  withdraw(
+    wad: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "withdraw(uint256)"(
+    wad: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   callStatic: {
-    balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "balanceOf(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     deposit(overrides?: CallOverrides): Promise<void>;
 
     "deposit()"(overrides?: CallOverrides): Promise<void>;
@@ -133,18 +128,18 @@ export class Iweth extends Contract {
       value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    withdraw(wad: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "withdraw(uint256)"(
+      wad: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    balanceOf(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "balanceOf(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     deposit(overrides?: PayableOverrides): Promise<BigNumber>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<BigNumber>;
@@ -160,19 +155,16 @@ export class Iweth extends Contract {
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    withdraw(wad: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "withdraw(uint256)"(
+      wad: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    balanceOf(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "balanceOf(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     deposit(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
@@ -186,6 +178,16 @@ export class Iweth extends Contract {
     "transfer(address,uint256)"(
       to: string,
       value: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    withdraw(
+      wad: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "withdraw(uint256)"(
+      wad: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

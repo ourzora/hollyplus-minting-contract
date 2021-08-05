@@ -8,7 +8,7 @@ import "./IERC2981.sol";
 
 contract RoyaltyConfig is IERC2981, ERC165 {
     uint256 private constant PERCENTAGE_SCALE = 10e5;
-    event UpdatedRoyalty(address indexed recipient, uint256 indexed bps, uint256 indexed tokenId);
+    event UpdatedRoyalty(uint256 indexed tokenId, address recipient, uint256 bps);
 
     struct RoyaltyInfo {
         uint256 bps;
@@ -19,7 +19,7 @@ contract RoyaltyConfig is IERC2981, ERC165 {
 
     function _setRoyaltyPayoutAddressForToken(
         address royaltyReciever,
-        uint256 tokenId,
+        uint256 tokenId
     ) internal virtual {
         emit UpdatedRoyalty(tokenId, royaltyReciever, royalities[tokenId].bps);
         royalities[tokenId].receiver = royaltyReciever;

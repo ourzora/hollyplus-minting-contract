@@ -23,20 +23,14 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IAuctionHouseInterface extends ethers.utils.Interface {
   functions: {
-    "auctions(uint256)": FunctionFragment;
     "cancelAuction(uint256)": FunctionFragment;
     "createAuction(uint256,address,uint256,uint256,address,uint8,address)": FunctionFragment;
     "createBid(uint256,uint256)": FunctionFragment;
     "endAuction(uint256)": FunctionFragment;
-    "minBidIncrementPercentage()": FunctionFragment;
     "setAuctionApproval(uint256,bool)": FunctionFragment;
     "setAuctionReservePrice(uint256,uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "auctions",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "cancelAuction",
     values: [BigNumberish]
@@ -62,10 +56,6 @@ interface IAuctionHouseInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "minBidIncrementPercentage",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "setAuctionApproval",
     values: [BigNumberish, boolean]
   ): string;
@@ -74,7 +64,6 @@ interface IAuctionHouseInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
 
-  decodeFunctionResult(functionFragment: "auctions", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cancelAuction",
     data: BytesLike
@@ -85,10 +74,6 @@ interface IAuctionHouseInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "createBid", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "endAuction", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "minBidIncrementPercentage",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "setAuctionApproval",
     data: BytesLike
@@ -131,70 +116,6 @@ export class IAuctionHouse extends Contract {
   interface: IAuctionHouseInterface;
 
   functions: {
-    auctions(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        tokenId: BigNumber;
-        tokenContract: string;
-        approved: boolean;
-        amount: BigNumber;
-        duration: BigNumber;
-        firstBidTime: BigNumber;
-        reservePrice: BigNumber;
-        curatorFeePercentage: number;
-        tokenOwner: string;
-        bidder: string;
-        curator: string;
-        auctionCurrency: string;
-        0: BigNumber;
-        1: string;
-        2: boolean;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: number;
-        8: string;
-        9: string;
-        10: string;
-        11: string;
-      };
-    }>;
-
-    "auctions(uint256)"(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        tokenId: BigNumber;
-        tokenContract: string;
-        approved: boolean;
-        amount: BigNumber;
-        duration: BigNumber;
-        firstBidTime: BigNumber;
-        reservePrice: BigNumber;
-        curatorFeePercentage: number;
-        tokenOwner: string;
-        bidder: string;
-        curator: string;
-        auctionCurrency: string;
-        0: BigNumber;
-        1: string;
-        2: boolean;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: number;
-        8: string;
-        9: string;
-        10: string;
-        11: string;
-      };
-    }>;
-
     cancelAuction(
       auctionId: BigNumberish,
       overrides?: Overrides
@@ -249,14 +170,6 @@ export class IAuctionHouse extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    minBidIncrementPercentage(overrides?: CallOverrides): Promise<{
-      0: number;
-    }>;
-
-    "minBidIncrementPercentage()"(overrides?: CallOverrides): Promise<{
-      0: number;
-    }>;
-
     setAuctionApproval(
       auctionId: BigNumberish,
       approved: boolean,
@@ -281,66 +194,6 @@ export class IAuctionHouse extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
-
-  auctions(
-    auctionId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    tokenId: BigNumber;
-    tokenContract: string;
-    approved: boolean;
-    amount: BigNumber;
-    duration: BigNumber;
-    firstBidTime: BigNumber;
-    reservePrice: BigNumber;
-    curatorFeePercentage: number;
-    tokenOwner: string;
-    bidder: string;
-    curator: string;
-    auctionCurrency: string;
-    0: BigNumber;
-    1: string;
-    2: boolean;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: BigNumber;
-    7: number;
-    8: string;
-    9: string;
-    10: string;
-    11: string;
-  }>;
-
-  "auctions(uint256)"(
-    auctionId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    tokenId: BigNumber;
-    tokenContract: string;
-    approved: boolean;
-    amount: BigNumber;
-    duration: BigNumber;
-    firstBidTime: BigNumber;
-    reservePrice: BigNumber;
-    curatorFeePercentage: number;
-    tokenOwner: string;
-    bidder: string;
-    curator: string;
-    auctionCurrency: string;
-    0: BigNumber;
-    1: string;
-    2: boolean;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: BigNumber;
-    7: number;
-    8: string;
-    9: string;
-    10: string;
-    11: string;
-  }>;
 
   cancelAuction(
     auctionId: BigNumberish,
@@ -396,10 +249,6 @@ export class IAuctionHouse extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  minBidIncrementPercentage(overrides?: CallOverrides): Promise<number>;
-
-  "minBidIncrementPercentage()"(overrides?: CallOverrides): Promise<number>;
-
   setAuctionApproval(
     auctionId: BigNumberish,
     approved: boolean,
@@ -425,66 +274,6 @@ export class IAuctionHouse extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    auctions(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      tokenId: BigNumber;
-      tokenContract: string;
-      approved: boolean;
-      amount: BigNumber;
-      duration: BigNumber;
-      firstBidTime: BigNumber;
-      reservePrice: BigNumber;
-      curatorFeePercentage: number;
-      tokenOwner: string;
-      bidder: string;
-      curator: string;
-      auctionCurrency: string;
-      0: BigNumber;
-      1: string;
-      2: boolean;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: number;
-      8: string;
-      9: string;
-      10: string;
-      11: string;
-    }>;
-
-    "auctions(uint256)"(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      tokenId: BigNumber;
-      tokenContract: string;
-      approved: boolean;
-      amount: BigNumber;
-      duration: BigNumber;
-      firstBidTime: BigNumber;
-      reservePrice: BigNumber;
-      curatorFeePercentage: number;
-      tokenOwner: string;
-      bidder: string;
-      curator: string;
-      auctionCurrency: string;
-      0: BigNumber;
-      1: string;
-      2: boolean;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: number;
-      8: string;
-      9: string;
-      10: string;
-      11: string;
-    }>;
-
     cancelAuction(
       auctionId: BigNumberish,
       overrides?: CallOverrides
@@ -538,10 +327,6 @@ export class IAuctionHouse extends Contract {
       auctionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    minBidIncrementPercentage(overrides?: CallOverrides): Promise<number>;
-
-    "minBidIncrementPercentage()"(overrides?: CallOverrides): Promise<number>;
 
     setAuctionApproval(
       auctionId: BigNumberish,
@@ -633,16 +418,6 @@ export class IAuctionHouse extends Contract {
   };
 
   estimateGas: {
-    auctions(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "auctions(uint256)"(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     cancelAuction(
       auctionId: BigNumberish,
       overrides?: Overrides
@@ -695,12 +470,6 @@ export class IAuctionHouse extends Contract {
     "endAuction(uint256)"(
       auctionId: BigNumberish,
       overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    minBidIncrementPercentage(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "minBidIncrementPercentage()"(
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     setAuctionApproval(
@@ -729,16 +498,6 @@ export class IAuctionHouse extends Contract {
   };
 
   populateTransaction: {
-    auctions(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "auctions(uint256)"(
-      auctionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     cancelAuction(
       auctionId: BigNumberish,
       overrides?: Overrides
@@ -791,14 +550,6 @@ export class IAuctionHouse extends Contract {
     "endAuction(uint256)"(
       auctionId: BigNumberish,
       overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    minBidIncrementPercentage(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "minBidIncrementPercentage()"(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     setAuctionApproval(

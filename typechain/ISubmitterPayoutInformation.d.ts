@@ -21,23 +21,14 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface ISubmitterPayoutInformationInterface extends ethers.utils.Interface {
   functions: {
-    "getArtistAuctionRoyaltyAddress()": FunctionFragment;
     "getSubmitterPayoutInformation(uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "getArtistAuctionRoyaltyAddress",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "getSubmitterPayoutInformation",
     values: [BigNumberish]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "getArtistAuctionRoyaltyAddress",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getSubmitterPayoutInformation",
     data: BytesLike
@@ -60,14 +51,6 @@ export class ISubmitterPayoutInformation extends Contract {
   interface: ISubmitterPayoutInformationInterface;
 
   functions: {
-    getArtistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "getArtistAuctionRoyaltyAddress()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
     getSubmitterPayoutInformation(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -83,12 +66,6 @@ export class ISubmitterPayoutInformation extends Contract {
     }>;
   };
 
-  getArtistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<string>;
-
-  "getArtistAuctionRoyaltyAddress()"(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   getSubmitterPayoutInformation(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -100,12 +77,6 @@ export class ISubmitterPayoutInformation extends Contract {
   ): Promise<string>;
 
   callStatic: {
-    getArtistAuctionRoyaltyAddress(overrides?: CallOverrides): Promise<string>;
-
-    "getArtistAuctionRoyaltyAddress()"(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     getSubmitterPayoutInformation(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -120,14 +91,6 @@ export class ISubmitterPayoutInformation extends Contract {
   filters: {};
 
   estimateGas: {
-    getArtistAuctionRoyaltyAddress(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getArtistAuctionRoyaltyAddress()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getSubmitterPayoutInformation(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -140,14 +103,6 @@ export class ISubmitterPayoutInformation extends Contract {
   };
 
   populateTransaction: {
-    getArtistAuctionRoyaltyAddress(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getArtistAuctionRoyaltyAddress()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getSubmitterPayoutInformation(
       tokenId: BigNumberish,
       overrides?: CallOverrides

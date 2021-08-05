@@ -320,87 +320,6 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "auctions",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "tokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "tokenContract",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "approved",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "amount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "duration",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "firstBidTime",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "reservePrice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint8",
-            name: "curatorFeePercentage",
-            type: "uint8",
-          },
-          {
-            internalType: "address",
-            name: "tokenOwner",
-            type: "address",
-          },
-          {
-            internalType: "address payable",
-            name: "bidder",
-            type: "address",
-          },
-          {
-            internalType: "address payable",
-            name: "curator",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "auctionCurrency",
-            type: "address",
-          },
-        ],
-        internalType: "struct IAuctionHouse.Auction",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
-    ],
     name: "cancelAuction",
     outputs: [],
     stateMutability: "nonpayable",
@@ -484,19 +403,6 @@ const _abi = [
     name: "endAuction",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "minBidIncrementPercentage",
-    outputs: [
-      {
-        internalType: "uint8",
-        name: "",
-        type: "uint8",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {

@@ -22,19 +22,6 @@ export class ISubmitterPayoutInformationFactory {
 
 const _abi = [
   {
-    inputs: [],
-    name: "getArtistAuctionRoyaltyAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",

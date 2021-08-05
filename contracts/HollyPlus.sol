@@ -50,6 +50,10 @@ import "./royalties/RoyaltyConfig.sol";
 import "./utils/ISubmitterPayoutInformation.sol";
 
 /**
+ * author: iain iain@zora.co
+ * project: holly+ artist contract
+ *
+ *
  * ERC721 token contract, including:
  *
  *  - ability for holders to burn (destroy) their tokens
@@ -67,8 +71,7 @@ contract MintableArtistCollection is
     AccessControl,
     ERC721Enumerable,
     RoyaltyConfig,
-    ISubmitterPayoutInformation,
-    ERC721Burnable
+    ISubmitterPayoutInformation
 {
     using Counters for Counters.Counter;
     event URIsUpdated(uint256, string, string);
@@ -111,6 +114,15 @@ contract MintableArtistCollection is
         TokenInfo memory info = tokenInfo[tokenId];
         return (info.metadataURI, info.metadataHash, info.contentURI, info.contentHash);
     }
+
+    /**
+      Only minter can burn.
+    */
+    function burn(uint256 tokenId) public onlyRole(MINTER_ROLE) {
+        require(_exists(tokenId));
+        require(ERC721.ownerOf(tokenId) == _msgSender());
+        _burn(tokenId);
+    }
     
     function contentURI(uint256 tokenId)
         public
@@ -120,7 +132,7 @@ contract MintableArtistCollection is
         return tokenInfo[tokenId].contentURI;
     }
 
-    function getSubmitterPayoutInformation(uint256 tokenId)
+    function submitter(uint256 tokenId)
         public
         view
         override
@@ -146,9 +158,9 @@ contract MintableArtistCollection is
      */
     function mint(
         address to,
-        string memory metadataURI,
+        string memory _metadataURI,
         bytes32 metadataHash,
-        string memory contentURI,
+        string memory _contentURI,
         bytes32 contentHash,
         address submitterAddress,
         address royaltyPayoutAddress,
@@ -158,13 +170,13 @@ contract MintableArtistCollection is
         uint256 tokenId = _tokenIdTracker.current();
         _mint(to, tokenId);
         tokenInfo[tokenId] = TokenInfo({
-            metadataURI: metadataURI,
+            metadataURI: _metadataURI,
             metadataHash: metadataHash,
-            contentURI: contentURI,
+            contentURI: _contentURI,
             contentHash: contentHash,
             submitterAddress: submitterAddress
         });
-        emit Mint(_msgSender(), tokenId, submitterAddress, metadataURI, metadataHash, contentURI, contentHash);
+        emit Mint(_msgSender(), tokenId, submitterAddress, _metadataURI, metadataHash, _contentURI, contentHash);
         _setRoyaltyForToken(royaltyPayoutAddress, royaltyBPS, tokenId);
         _tokenIdTracker.increment();
     }
@@ -173,17 +185,17 @@ contract MintableArtistCollection is
         uint256 tokenId,
         address royaltyPayoutAddress
     ) public onlyRole(MAINTAINER_ROLE) {
-        _setRoyaltyPayoutForToken(royaltyPayoutAddress, tokenId);
+        _setRoyaltyPayoutAddressForToken(royaltyPayoutAddress, tokenId);
     }
 
     function updateTokenURIs(
         uint256 tokenId,
-        string memory metadataURI,
-        string memory contentURI
+        string memory _metadataURI,
+        string memory _contentURI
     ) public onlyRole(MAINTAINER_ROLE) {
-        tokenInfo[tokenId].metadataURI = metadataURI;
-        tokenInfo[tokenId].contentURI = contentURI;
-        emit URIsUpdated(tokenId, metadataURI, contentURI);
+        tokenInfo[tokenId].metadataURI = _metadataURI;
+        tokenInfo[tokenId].contentURI = _contentURI;
+        emit URIsUpdated(tokenId, _metadataURI, _contentURI);
     }
 
     function tokenURI(uint256 tokenId)
@@ -217,6 +229,6 @@ contract MintableArtistCollection is
         override(AccessControl, ERC721, ERC721Enumerable, RoyaltyConfig)
         returns (bool)
     {
-        return super.supportsInterface(interfaceId) || interfaceId == type(ISubmitterPayoutInformation);
+        return super.supportsInterface(interfaceId) || interfaceId == type(ISubmitterPayoutInformation).interfaceId;
     }
 }

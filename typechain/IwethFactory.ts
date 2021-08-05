@@ -15,25 +15,6 @@ export class IwethFactory {
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "balanceOf",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "deposit",
     outputs: [],
@@ -61,6 +42,19 @@ const _abi = [
         type: "bool",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "wad",
+        type: "uint256",
+      },
+    ],
+    name: "withdraw",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
