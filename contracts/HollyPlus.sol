@@ -122,11 +122,11 @@ contract MintableArtistCollection is
     */
     function burn(uint256 tokenId) public onlyRole(MINTER_ROLE) {
         require(_exists(tokenId));
-        require(ERC721.ownerOf(tokenId) == _msgSender());
+        require(ERC721.ownerOf(tokenId) == _msgSender(), "Not Owner");
         _burn(tokenId);
     }
     
-    function contentURI(uint256 tokenId)
+    function tokenContentURI(uint256 tokenId)
         public
         view
         returns (string memory)
@@ -134,6 +134,7 @@ contract MintableArtistCollection is
         return tokenInfo[tokenId].contentURI;
     }
 
+// TODO: should be creator or submitter?
     function submitter(uint256 tokenId)
         public
         view

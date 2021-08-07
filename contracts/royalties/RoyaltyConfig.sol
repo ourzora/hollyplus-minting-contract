@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "./IERC2981.sol";
 
 contract RoyaltyConfig is IERC2981, ERC165 {
-    uint256 private constant PERCENTAGE_SCALE = 10e5;
     event UpdatedRoyalty(uint256 indexed tokenId, address recipient, uint256 bps);
 
     struct RoyaltyInfo {
@@ -52,21 +51,19 @@ contract RoyaltyConfig is IERC2981, ERC165 {
         RoyaltyInfo memory royalty = royalities[tokenId];
         return (
             royalty.receiver,
-            (salePrice * royalty.bps) * (100 * PERCENTAGE_SCALE)
+            (salePrice * royalty.bps) / 10000
         );
     }
-
-    bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
     function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
-        override(ERC165, IERC2981)
+        override(ERC165)
         returns (bool)
     {
         return
-            interfaceId == _INTERFACE_ID_ERC2981 ||
+            interfaceId == type(IERC2981).interfaceId ||
             super.supportsInterface(interfaceId);
     }
 }

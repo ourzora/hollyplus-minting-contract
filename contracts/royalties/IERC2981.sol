@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 ///
 /// @dev Interface for the NFT Royalty Standard
 ///
-interface IERC2981 is IERC165 {
+interface IERC2981 {
     /// ERC165 bytes to add to interface array - set in parent contract
     /// implementing this standard
     ///
@@ -28,13 +28,4 @@ interface IERC2981 is IERC165 {
         address receiver,
         uint256 royaltyAmount
     );
-
-    /// @notice Informs callers that this contract supports ERC2981
-    /// @dev If `_registerInterface(_INTERFACE_ID_ERC2981)` is called
-    ///      in the initializer, this should be automatic
-    /// @param interfaceID The interface identifier, as specified in ERC-165
-    /// @return `true` if the contract implements
-    ///         `_INTERFACE_ID_ERC2981` and `false` otherwise
-    function supportsInterface(bytes4 interfaceID)
-	external view override returns (bool);
 }

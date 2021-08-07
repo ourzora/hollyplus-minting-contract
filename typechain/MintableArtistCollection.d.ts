@@ -28,7 +28,6 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
-    "contentURI(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getURIs(uint256)": FunctionFragment;
@@ -48,6 +47,7 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
+    "tokenContentURI(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
@@ -74,10 +74,6 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
-  encodeFunctionData(
-    functionFragment: "contentURI",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
@@ -158,6 +154,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "tokenContentURI",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "tokenOfOwnerByIndex",
     values: [string, BigNumberish]
   ): string;
@@ -197,7 +197,6 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "contentURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -242,6 +241,10 @@ interface MintableArtistCollectionInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokenByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenContentURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -362,20 +365,6 @@ export class MintableArtistCollection extends Contract {
       tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    contentURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "contentURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -658,6 +647,20 @@ export class MintableArtistCollection extends Contract {
       0: BigNumber;
     }>;
 
+    tokenContentURI(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "tokenContentURI(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
@@ -777,13 +780,6 @@ export class MintableArtistCollection extends Contract {
     tokenId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  contentURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "contentURI(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -1017,6 +1013,16 @@ export class MintableArtistCollection extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  tokenContentURI(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "tokenContentURI(uint256)"(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   tokenOfOwnerByIndex(
     owner: string,
     index: BigNumberish,
@@ -1118,16 +1124,6 @@ export class MintableArtistCollection extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    contentURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "contentURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -1364,6 +1360,16 @@ export class MintableArtistCollection extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    tokenContentURI(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "tokenContentURI(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
@@ -1521,16 +1527,6 @@ export class MintableArtistCollection extends Contract {
     "burn(uint256)"(
       tokenId: BigNumberish,
       overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    contentURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "contentURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getApproved(
@@ -1744,6 +1740,16 @@ export class MintableArtistCollection extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    tokenContentURI(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenContentURI(uint256)"(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
@@ -1860,16 +1866,6 @@ export class MintableArtistCollection extends Contract {
     "burn(uint256)"(
       tokenId: BigNumberish,
       overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    contentURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "contentURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getApproved(
@@ -2080,6 +2076,16 @@ export class MintableArtistCollection extends Contract {
 
     "tokenByIndex(uint256)"(
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenContentURI(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tokenContentURI(uint256)"(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
