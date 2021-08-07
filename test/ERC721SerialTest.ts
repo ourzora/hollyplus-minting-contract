@@ -100,8 +100,12 @@ describe("MintableArtistCollection", () => {
         signerAddress,
         100
       );
-      await expect(mintableArtistInstance.burn(1)).to.be.revertedWith("Not Owner");
-      expect(await mintableArtistInstance.ownerOf(1)).to.be.equal(signer1Address);
+      await expect(mintableArtistInstance.burn(1)).to.be.revertedWith(
+        "Not Owner"
+      );
+      expect(await mintableArtistInstance.ownerOf(1)).to.be.equal(
+        signer1Address
+      );
     });
   });
   describe("maintains an NFT", () => {
@@ -130,6 +134,56 @@ describe("MintableArtistCollection", () => {
     it("returns supports royalty interface", async () => {
       expect(await mintableArtistInstance.supportsInterface("0x2a55205a")).to.be
         .true;
+    });
+    it("can freeze minting", async () => {
+      await mintableArtistInstance.renounceRole(
+        await mintableArtistInstance.MINTER_ROLE(),
+        signerAddress
+      );
+      await mintableArtistInstance.renounceRole(
+        await mintableArtistInstance.DEFAULT_ADMIN_ROLE(),
+        signerAddress
+      );
+      await expect(
+        mintableArtistInstance.mint(
+          signerAddress,
+          "ipfs://CID_TEST_METADATA",
+          "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+          "ipfs://CID_TEST_CONTENT",
+          "0x71d982e3051ea86cbe35e212af3726f73d688dee5970ce03a9272cccea34abe8",
+          signer1Address,
+          signerAddress,
+          10
+        )
+      ).to.be.revertedWith(`AccessControl: account ${signerAddress.toLowerCase()} is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`);
+
+      // allows royalty payout info to be updated
+      expect((await mintableArtistInstance.royaltyInfo(1, 0))[0]).to.be.equal(
+        signerAddress
+      );
+      await mintableArtistInstance.updateRoyaltyInfo(1, signer1Address);
+      expect((await mintableArtistInstance.royaltyInfo(1, 0))[0]).to.be.equal(
+        signer1Address
+      );
+
+      // allows token uri to be updated
+      expect(
+        await mintableArtistInstance.updateTokenURIs(
+          1,
+          "https://ipfs.io/ipfs/IPFS_CID_META",
+          "https://ipfs.io/ipfs/IPFS_CID_CONTENT"
+        )
+      ).to.emit(mintableArtistInstance, "URIsUpdated");
+
+      // does not allow adding role for minter
+      await expect(
+        mintableArtistInstance.grantRole(
+          await mintableArtistInstance.MINTER_ROLE(),
+          signerAddress
+        )
+      ).to.be.revertedWith(
+        `AccessControl: account ${signerAddress.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
+      );
     });
     it("handles updating royalty info", async () => {
       expect((await mintableArtistInstance.royaltyInfo(1, 0))[0]).to.be.equal(
