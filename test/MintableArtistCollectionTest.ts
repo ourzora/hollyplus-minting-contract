@@ -29,6 +29,10 @@ describe("MintableArtistCollection", () => {
 
   describe("minting", () => {
     it("creates a NFT", async () => {
+      await mintableArtistInstance.grantRole(
+        await mintableArtistInstance.MINTER_ROLE(),
+        signerAddress
+      );
       await mintableArtistInstance.mint(
         signer1Address,
         "ipfs://CID_TEST_METADATA",
@@ -75,7 +79,11 @@ describe("MintableArtistCollection", () => {
         `AccessControl: account ${signer1Address.toLowerCase()} is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`
       );
     });
-    it("allows burning", async () => {
+    it("allows burning by minter", async () => {
+      await mintableArtistInstance.grantRole(
+        await mintableArtistInstance.MINTER_ROLE(),
+        signerAddress
+      );
       await mintableArtistInstance.mint(
         signerAddress,
         "ipfs://CID_TEST_METADATA",
@@ -90,6 +98,10 @@ describe("MintableArtistCollection", () => {
       await expect(mintableArtistInstance.ownerOf(1)).to.be.revertedWith("");
     });
     it("does not allow burning by non-owner", async () => {
+      await mintableArtistInstance.grantRole(
+        await mintableArtistInstance.MINTER_ROLE(),
+        signerAddress
+      );
       await mintableArtistInstance.mint(
         signer1Address,
         "ipfs://CID_TEST_METADATA",
@@ -101,7 +113,7 @@ describe("MintableArtistCollection", () => {
         100
       );
       await expect(mintableArtistInstance.burn(1)).to.be.revertedWith(
-        "Not Owner"
+        "Not Contract Owner"
       );
       expect(await mintableArtistInstance.ownerOf(1)).to.be.equal(
         signer1Address
@@ -110,6 +122,10 @@ describe("MintableArtistCollection", () => {
   });
   describe("maintains an NFT", () => {
     beforeEach(async () => {
+      await mintableArtistInstance.grantRole(
+        await mintableArtistInstance.MINTER_ROLE(),
+        signerAddress
+      );
       await mintableArtistInstance.mint(
         signer1Address,
         "ipfs://CID_TEST_METADATA",
@@ -136,14 +152,12 @@ describe("MintableArtistCollection", () => {
         .true;
     });
     it("can freeze minting", async () => {
+
       await mintableArtistInstance.renounceRole(
         await mintableArtistInstance.MINTER_ROLE(),
         signerAddress
       );
-      await mintableArtistInstance.renounceRole(
-        await mintableArtistInstance.DEFAULT_ADMIN_ROLE(),
-        signerAddress
-      );
+
       await expect(
         mintableArtistInstance.mint(
           signerAddress,
@@ -155,7 +169,14 @@ describe("MintableArtistCollection", () => {
           signerAddress,
           10
         )
-      ).to.be.revertedWith(`AccessControl: account ${signerAddress.toLowerCase()} is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`);
+      ).to.be.revertedWith(
+        `AccessControl: account ${signerAddress.toLowerCase()} is missing role 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`
+      );
+
+      const maintainerRole = await mintableArtistInstance.MAINTAINER_ROLE();
+
+      // allows royalty payout info to be updated
+      await mintableArtistInstance.grantRole(maintainerRole, signerAddress);
 
       // allows royalty payout info to be updated
       expect((await mintableArtistInstance.royaltyInfo(1, 0))[0]).to.be.equal(
@@ -175,6 +196,21 @@ describe("MintableArtistCollection", () => {
         )
       ).to.emit(mintableArtistInstance, "URIsUpdated");
 
+      await mintableArtistInstance.renounceRole(
+        await mintableArtistInstance.DEFAULT_ADMIN_ROLE(),
+        signerAddress
+      );
+      await mintableArtistInstance.renounceRole(
+        await mintableArtistInstance.MAINTAINER_ROLE(),
+        signerAddress
+      );
+
+      await expect(
+        mintableArtistInstance.updateRoyaltyInfo(1, signerAddress)
+      ).to.be.revertedWith(
+        `AccessControl: account ${signerAddress.toLowerCase()} is missing role ${maintainerRole}`
+      );
+
       // does not allow adding role for minter
       await expect(
         mintableArtistInstance.grantRole(
@@ -186,6 +222,10 @@ describe("MintableArtistCollection", () => {
       );
     });
     it("handles updating royalty info", async () => {
+      await mintableArtistInstance.grantRole(
+        await mintableArtistInstance.MAINTAINER_ROLE(),
+        signerAddress
+      );
       expect((await mintableArtistInstance.royaltyInfo(1, 0))[0]).to.be.equal(
         signerAddress
       );
@@ -208,6 +248,11 @@ describe("MintableArtistCollection", () => {
 
       const tokenURI = await mintableArtistInstance.tokenURI(1);
       expect(tokenURI).to.equal("ipfs://CID_TEST_METADATA");
+
+      await mintableArtistInstance.grantRole(
+        await mintableArtistInstance.MAINTAINER_ROLE(),
+        signerAddress
+      );
 
       expect(
         await mintableArtistInstance.updateTokenURIs(

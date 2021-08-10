@@ -104,8 +104,6 @@ contract MintableArtistCollection is
         _tokenIdTracker.increment();
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(MINTER_ROLE, _msgSender());
-        _setupRole(MAINTAINER_ROLE, _msgSender());
     }
 
     function getURIs(uint256 tokenId)
@@ -122,7 +120,7 @@ contract MintableArtistCollection is
     */
     function burn(uint256 tokenId) public onlyRole(MINTER_ROLE) {
         require(_exists(tokenId));
-        require(ERC721.ownerOf(tokenId) == _msgSender(), "Not Owner");
+        require(ERC721.ownerOf(tokenId) == _msgSender(), "Not Contract Owner");
         _burn(tokenId);
     }
     
