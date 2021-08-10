@@ -43,10 +43,6 @@ const config: HardhatUserConfig = {
   namedAccounts: {
     deployer: 0,
     purchaser: 0,
-    weth: {
-      0: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-      4: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
-    },
     auctionHouse: {
       0: "0xE468cE99444174Bd3bBBEd09209577d25D1ad673",
       4: "0xE7dd1252f50B3d845590Da0c5eADd985049a03ce",
