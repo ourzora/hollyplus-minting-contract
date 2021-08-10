@@ -2,24 +2,24 @@ import { expect } from "chai";
 import "@nomiclabs/hardhat-ethers";
 import { deployments, ethers } from "hardhat";
 
-import type { MintableArtistCollection } from "../typechain";
+import type { HollyPlus } from "../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-describe("MintableArtistCollection", () => {
-  let mintableArtistInstance: MintableArtistCollection;
+describe("HollyPlus", () => {
+  let mintableArtistInstance: HollyPlus;
   let signer: SignerWithAddress;
   let signerAddress: string;
   let signer1: SignerWithAddress;
   let signer1Address: string;
 
   beforeEach(async () => {
-    await deployments.fixture(["MintableArtistCollection"]);
-    const deployment = await deployments.get("MintableArtistCollection");
+    await deployments.fixture(["HollyPlus"]);
+    const deployment = await deployments.get("HollyPlus");
     mintableArtistInstance = (await ethers.getContractAt(
-      "MintableArtistCollection",
+      "HollyPlus",
       deployment.address,
       signer
-    )) as MintableArtistCollection;
+    )) as HollyPlus;
     const signers = await ethers.getSigners();
     signer = signers[0];
     signerAddress = await signer.getAddress();

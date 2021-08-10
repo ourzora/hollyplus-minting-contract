@@ -6,9 +6,9 @@ import { Signer } from "ethers";
 import { Provider, TransactionRequest } from "@ethersproject/providers";
 import { Contract, ContractFactory, Overrides } from "@ethersproject/contracts";
 
-import type { MintableArtistCollection } from "./MintableArtistCollection";
+import type { HollyPlus } from "./HollyPlus";
 
-export class MintableArtistCollectionFactory extends ContractFactory {
+export class HollyPlusFactory extends ContractFactory {
   constructor(signer?: Signer) {
     super(_abi, _bytecode, signer);
   }
@@ -17,12 +17,12 @@ export class MintableArtistCollectionFactory extends ContractFactory {
     name: string,
     symbol: string,
     overrides?: Overrides
-  ): Promise<MintableArtistCollection> {
+  ): Promise<HollyPlus> {
     return super.deploy(
       name,
       symbol,
       overrides || {}
-    ) as Promise<MintableArtistCollection>;
+    ) as Promise<HollyPlus>;
   }
   getDeployTransaction(
     name: string,
@@ -31,21 +31,21 @@ export class MintableArtistCollectionFactory extends ContractFactory {
   ): TransactionRequest {
     return super.getDeployTransaction(name, symbol, overrides || {});
   }
-  attach(address: string): MintableArtistCollection {
-    return super.attach(address) as MintableArtistCollection;
+  attach(address: string): HollyPlus {
+    return super.attach(address) as HollyPlus;
   }
-  connect(signer: Signer): MintableArtistCollectionFactory {
-    return super.connect(signer) as MintableArtistCollectionFactory;
+  connect(signer: Signer): HollyPlusFactory {
+    return super.connect(signer) as HollyPlusFactory;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): MintableArtistCollection {
+  ): HollyPlus {
     return new Contract(
       address,
       _abi,
       signerOrProvider
-    ) as MintableArtistCollection;
+    ) as HollyPlus;
   }
 }
 

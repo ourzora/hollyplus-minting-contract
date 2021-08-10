@@ -67,7 +67,7 @@ import "./utils/ISubmitterPayoutInformation.sol";
  * The account that deploys the contract will be granted the minter and admin
  * roles, as well as the default admin role.
  */
-contract MintableArtistCollection is
+contract HollyPlus is
     Context,
     AccessControl,
     ERC721,

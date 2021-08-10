@@ -1,15 +1,15 @@
 import { ethers, deployments, getNamedAccounts } from "hardhat";
-import { MintableArtistCollection } from "../typechain";
+import { HollyPlus } from "../typechain";
 
 async function main() {
   const { deployer } = await getNamedAccounts();
   const mintableCollectionAddress = (
-    await deployments.get("MintableArtistCollection")
+    await deployments.get("HollyPlus")
   ).address;
   const mintableCollection = (await ethers.getContractAt(
-    "MintableArtistCollection",
+    "HollyPlus",
     mintableCollectionAddress
-  )) as MintableArtistCollection;
+  )) as HollyPlus;
 
   // metadataCid
   const metadataCid = "QmYAGKfkH2suYPMZH3vhT7eRPiDWeLhymwoXkK2KwkHwyT";

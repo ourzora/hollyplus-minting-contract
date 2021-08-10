@@ -2,15 +2,15 @@ module.exports = async ({ getNamedAccounts, deployments, ethers }: any) => {
   const { deploy } = deployments;
   const { deployer, auctionHouse } = await getNamedAccounts();
 
-  await deploy("MintableArtistCollection", {
+  await deploy("HollyPlus", {
     from: deployer,
     args: ["HollyPlus+", "HOLLYPLUS"],
     log: true,
   });
 
   const mintableCollection = ethers.getContractAt(
-    "MintableArtistCollection",
-    (await deployments.get("MintableArtistCollection")).address
+    "HollyPlus",
+    (await deployments.get("HollyPlus")).address
   );
 
   if (auctionHouse) {
@@ -18,4 +18,4 @@ module.exports = async ({ getNamedAccounts, deployments, ethers }: any) => {
     await mintableCollection.setApprovalForAll(auctionHouse);
   }
 };
-module.exports.tags = ["MintableArtistCollection"];
+module.exports.tags = ["HollyPlus"];
