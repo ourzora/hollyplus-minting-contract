@@ -9,16 +9,15 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from "ethers";
-import {
-  Contract,
+  BaseContract,
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "@ethersproject/contracts";
+} from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
+import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface IAccessControlInterface extends ethers.utils.Interface {
   functions: {
@@ -65,104 +64,83 @@ interface IAccessControlInterface extends ethers.utils.Interface {
   events: {};
 }
 
-export class IAccessControl extends Contract {
+export class IAccessControl extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  on(event: EventFilter | string, listener: Listener): this;
-  once(event: EventFilter | string, listener: Listener): this;
-  addListener(eventName: EventFilter | string, listener: Listener): this;
-  removeAllListeners(eventName: EventFilter | string): this;
-  removeListener(eventName: any, listener: Listener): this;
+  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
+  off<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  on<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  once<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): this;
+
+  listeners(eventName?: string): Array<Listener>;
+  off(eventName: string, listener: Listener): this;
+  on(eventName: string, listener: Listener): this;
+  once(eventName: string, listener: Listener): this;
+  removeListener(eventName: string, listener: Listener): this;
+  removeAllListeners(eventName?: string): this;
+
+  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
+    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
   interface: IAccessControlInterface;
 
   functions: {
-    getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getRoleAdmin(bytes32)"(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
     grantRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "grantRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     hasRole(
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
+    ): Promise<[boolean]>;
 
     renounceRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "renounceRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     revokeRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "revokeRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
-  "getRoleAdmin(bytes32)"(
-    role: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   grantRole(
     role: BytesLike,
     account: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "grantRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   hasRole(
@@ -171,51 +149,22 @@ export class IAccessControl extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "hasRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   renounceRole(
     role: BytesLike,
     account: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "renounceRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   revokeRole(
     role: BytesLike,
     account: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "revokeRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
-    "getRoleAdmin(bytes32)"(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "grantRole(bytes32,address)"(
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
@@ -227,31 +176,13 @@ export class IAccessControl extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     renounceRole(
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "renounceRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "revokeRole(bytes32,address)"(
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
@@ -266,21 +197,10 @@ export class IAccessControl extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getRoleAdmin(bytes32)"(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     grantRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "grantRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     hasRole(
@@ -289,34 +209,16 @@ export class IAccessControl extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     renounceRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "renounceRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     revokeRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "revokeRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
@@ -326,21 +228,10 @@ export class IAccessControl extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getRoleAdmin(bytes32)"(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     grantRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "grantRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     hasRole(
@@ -349,34 +240,16 @@ export class IAccessControl extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     renounceRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "renounceRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     revokeRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "revokeRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

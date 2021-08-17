@@ -9,16 +9,15 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from "ethers";
-import {
-  Contract,
+  BaseContract,
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "@ethersproject/contracts";
+} from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
+import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface FundsRecoverableInterface extends ethers.utils.Interface {
   functions: {
@@ -106,146 +105,102 @@ interface FundsRecoverableInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
 }
 
-export class FundsRecoverable extends Contract {
+export class FundsRecoverable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  on(event: EventFilter | string, listener: Listener): this;
-  once(event: EventFilter | string, listener: Listener): this;
-  addListener(eventName: EventFilter | string, listener: Listener): this;
-  removeAllListeners(eventName: EventFilter | string): this;
-  removeListener(eventName: any, listener: Listener): this;
+  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
+  off<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  on<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  once<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): this;
+
+  listeners(eventName?: string): Array<Listener>;
+  off(eventName: string, listener: Listener): this;
+  on(eventName: string, listener: Listener): this;
+  once(eventName: string, listener: Listener): this;
+  removeListener(eventName: string, listener: Listener): this;
+  removeAllListeners(eventName?: string): this;
+
+  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
+    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
   interface: FundsRecoverableInterface;
 
   functions: {
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
-    "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getRoleAdmin(bytes32)"(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
     grantRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "grantRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     hasRole(
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
+    ): Promise<[boolean]>;
 
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "recoverERC20(address,uint256)"(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: Overrides
+    recoverETH(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    recoverETH(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "recoverETH()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     renounceRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "renounceRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     revokeRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "revokeRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "supportsInterface(bytes4)"(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
+    ): Promise<[boolean]>;
   };
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
-  "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
-
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-  "getRoleAdmin(bytes32)"(
-    role: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   grantRole(
     role: BytesLike,
     account: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "grantRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   hasRole(
@@ -254,50 +209,26 @@ export class FundsRecoverable extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "hasRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   recoverERC20(
     tokenAddress: string,
     tokenAmount: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "recoverERC20(address,uint256)"(
-    tokenAddress: string,
-    tokenAmount: BigNumberish,
-    overrides?: Overrides
+  recoverETH(
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  recoverETH(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "recoverETH()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   renounceRole(
     role: BytesLike,
     account: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "renounceRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   revokeRole(
     role: BytesLike,
     account: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "revokeRole(bytes32,address)"(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   supportsInterface(
@@ -305,30 +236,12 @@ export class FundsRecoverable extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "supportsInterface(bytes4)"(
-    interfaceId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   callStatic: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
-    "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
-
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
-    "getRoleAdmin(bytes32)"(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "grantRole(bytes32,address)"(
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
@@ -340,19 +253,7 @@ export class FundsRecoverable extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     recoverERC20(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "recoverERC20(address,uint256)"(
       tokenAddress: string,
       tokenAmount: BigNumberish,
       overrides?: CallOverrides
@@ -360,15 +261,7 @@ export class FundsRecoverable extends Contract {
 
     recoverETH(overrides?: CallOverrides): Promise<void>;
 
-    "recoverETH()"(overrides?: CallOverrides): Promise<void>;
-
     renounceRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "renounceRole(bytes32,address)"(
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
@@ -380,18 +273,7 @@ export class FundsRecoverable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "revokeRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "supportsInterface(bytes4)"(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -399,35 +281,37 @@ export class FundsRecoverable extends Contract {
 
   filters: {
     RoleAdminChanged(
-      role: BytesLike | null,
-      previousAdminRole: BytesLike | null,
-      newAdminRole: BytesLike | null
-    ): EventFilter;
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): TypedEventFilter<
+      [string, string, string],
+      { role: string; previousAdminRole: string; newAdminRole: string }
+    >;
 
     RoleGranted(
-      role: BytesLike | null,
-      account: string | null,
-      sender: string | null
-    ): EventFilter;
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): TypedEventFilter<
+      [string, string, string],
+      { role: string; account: string; sender: string }
+    >;
 
     RoleRevoked(
-      role: BytesLike | null,
-      account: string | null,
-      sender: string | null
-    ): EventFilter;
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): TypedEventFilter<
+      [string, string, string],
+      { role: string; account: string; sender: string }
+    >;
   };
 
   estimateGas: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "DEFAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getRoleAdmin(bytes32)"(
       role: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -435,13 +319,7 @@ export class FundsRecoverable extends Contract {
     grantRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "grantRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     hasRole(
@@ -450,58 +328,29 @@ export class FundsRecoverable extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "recoverERC20(address,uint256)"(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: Overrides
+    recoverETH(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    recoverETH(overrides?: Overrides): Promise<BigNumber>;
-
-    "recoverETH()"(overrides?: Overrides): Promise<BigNumber>;
 
     renounceRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "renounceRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     revokeRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "revokeRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "supportsInterface(bytes4)"(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -512,16 +361,7 @@ export class FundsRecoverable extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "DEFAULT_ADMIN_ROLE()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getRoleAdmin(bytes32)"(
       role: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -529,13 +369,7 @@ export class FundsRecoverable extends Contract {
     grantRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "grantRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     hasRole(
@@ -544,58 +378,29 @@ export class FundsRecoverable extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "hasRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "recoverERC20(address,uint256)"(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: Overrides
+    recoverETH(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    recoverETH(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "recoverETH()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     renounceRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "renounceRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     revokeRole(
       role: BytesLike,
       account: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "revokeRole(bytes32,address)"(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "supportsInterface(bytes4)"(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

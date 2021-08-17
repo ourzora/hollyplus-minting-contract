@@ -9,17 +9,16 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from "ethers";
-import {
-  Contract,
+  BaseContract,
   ContractTransaction,
   Overrides,
   PayableOverrides,
   CallOverrides,
-} from "@ethersproject/contracts";
+} from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
+import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface DynamicSketchMinterInterface extends ethers.utils.Interface {
   functions: {
@@ -119,16 +118,46 @@ interface DynamicSketchMinterInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
-export class DynamicSketchMinter extends Contract {
+export class DynamicSketchMinter extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  on(event: EventFilter | string, listener: Listener): this;
-  once(event: EventFilter | string, listener: Listener): this;
-  addListener(eventName: EventFilter | string, listener: Listener): this;
-  removeAllListeners(eventName: EventFilter | string): this;
-  removeListener(eventName: any, listener: Listener): this;
+  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
+  off<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  on<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  once<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): this;
+
+  listeners(eventName?: string): Array<Listener>;
+  off(eventName: string, listener: Listener): this;
+  on(eventName: string, listener: Listener): this;
+  once(eventName: string, listener: Listener): this;
+  removeListener(eventName: string, listener: Listener): this;
+  removeAllListeners(eventName?: string): this;
+
+  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
+    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
   interface: DynamicSketchMinterInterface;
 
@@ -151,206 +180,87 @@ export class DynamicSketchMinter extends Contract {
       recipient: string,
       mintableAddress: string,
       mintableCollection: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "createRelease(tuple,tuple,bool,uint256,uint256,address,address,uint256)"(
-      sketchReleaseGasRule: {
-        maxGasAllowed: BigNumberish;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-      },
-      sketchReleaseRuleOwnership: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumberish;
-        tokenIdRangeEnd: BigNumberish;
-        enabled: boolean;
-      },
-      isPaused: boolean,
-      maxAllowed: BigNumberish,
-      ethPrice: BigNumberish,
-      recipient: string,
-      mintableAddress: string,
-      mintableCollection: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getRelease(
       releaseId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        gasRule: {
-          maxGasAllowed: BigNumber;
-          disallowZeroGas: boolean;
-          enabled: boolean;
-          0: BigNumber;
-          1: boolean;
-          2: boolean;
-        };
-        ownershipRule: {
-          tokenAddress: string;
-          tokenIdRangeStart: BigNumber;
-          tokenIdRangeEnd: BigNumber;
-          enabled: boolean;
-          0: string;
-          1: BigNumber;
-          2: BigNumber;
-          3: boolean;
-        };
-        isPaused: boolean;
-        maxAllowed: BigNumber;
-        currentReleased: BigNumber;
-        ethPrice: BigNumber;
-        recipient: string;
-        mintableAddress: string;
-        mintableCollection: BigNumber;
-        0: {
-          maxGasAllowed: BigNumber;
-          disallowZeroGas: boolean;
-          enabled: boolean;
-          0: BigNumber;
-          1: boolean;
-          2: boolean;
-        };
-        1: {
-          tokenAddress: string;
-          tokenIdRangeStart: BigNumber;
-          tokenIdRangeEnd: BigNumber;
-          enabled: boolean;
-          0: string;
-          1: BigNumber;
-          2: BigNumber;
-          3: boolean;
-        };
-        2: boolean;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: BigNumber;
-      };
-    }>;
-
-    "getRelease(uint256)"(
-      releaseId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: {
-        gasRule: {
-          maxGasAllowed: BigNumber;
-          disallowZeroGas: boolean;
-          enabled: boolean;
-          0: BigNumber;
-          1: boolean;
-          2: boolean;
-        };
-        ownershipRule: {
-          tokenAddress: string;
-          tokenIdRangeStart: BigNumber;
-          tokenIdRangeEnd: BigNumber;
-          enabled: boolean;
-          0: string;
-          1: BigNumber;
-          2: BigNumber;
-          3: boolean;
-        };
-        isPaused: boolean;
-        maxAllowed: BigNumber;
-        currentReleased: BigNumber;
-        ethPrice: BigNumber;
-        recipient: string;
-        mintableAddress: string;
-        mintableCollection: BigNumber;
-        0: {
-          maxGasAllowed: BigNumber;
-          disallowZeroGas: boolean;
-          enabled: boolean;
-          0: BigNumber;
-          1: boolean;
-          2: boolean;
-        };
-        1: {
-          tokenAddress: string;
-          tokenIdRangeStart: BigNumber;
-          tokenIdRangeEnd: BigNumber;
-          enabled: boolean;
-          0: string;
-          1: BigNumber;
-          2: BigNumber;
-          3: boolean;
-        };
-        2: boolean;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: BigNumber;
-      };
-    }>;
+    ): Promise<
+      [
+        [
+          [BigNumber, boolean, boolean] & {
+            maxGasAllowed: BigNumber;
+            disallowZeroGas: boolean;
+            enabled: boolean;
+          },
+          [string, BigNumber, BigNumber, boolean] & {
+            tokenAddress: string;
+            tokenIdRangeStart: BigNumber;
+            tokenIdRangeEnd: BigNumber;
+            enabled: boolean;
+          },
+          boolean,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          string,
+          string,
+          BigNumber
+        ] & {
+          gasRule: [BigNumber, boolean, boolean] & {
+            maxGasAllowed: BigNumber;
+            disallowZeroGas: boolean;
+            enabled: boolean;
+          };
+          ownershipRule: [string, BigNumber, BigNumber, boolean] & {
+            tokenAddress: string;
+            tokenIdRangeStart: BigNumber;
+            tokenIdRangeEnd: BigNumber;
+            enabled: boolean;
+          };
+          isPaused: boolean;
+          maxAllowed: BigNumber;
+          currentReleased: BigNumber;
+          ethPrice: BigNumber;
+          recipient: string;
+          mintableAddress: string;
+          mintableCollection: BigNumber;
+        }
+      ]
+    >;
 
     mint(
       releaseId: BigNumberish,
       tokenOwned: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "mint(uint256,uint256)"(
-      releaseId: BigNumberish,
-      tokenOwned: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
-
-    "owner()"(overrides?: CallOverrides): Promise<{
-      0: string;
-    }>;
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "recoverERC20(address,uint256)"(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: Overrides
+    recoverETH(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    recoverETH(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "recoverETH()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     setPaused(
       releaseId: BigNumberish,
       isPaused: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setPaused(uint256,bool)"(
-      releaseId: BigNumberish,
-      isPaused: boolean,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
@@ -372,198 +282,85 @@ export class DynamicSketchMinter extends Contract {
     recipient: string,
     mintableAddress: string,
     mintableCollection: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "createRelease(tuple,tuple,bool,uint256,uint256,address,address,uint256)"(
-    sketchReleaseGasRule: {
-      maxGasAllowed: BigNumberish;
-      disallowZeroGas: boolean;
-      enabled: boolean;
-    },
-    sketchReleaseRuleOwnership: {
-      tokenAddress: string;
-      tokenIdRangeStart: BigNumberish;
-      tokenIdRangeEnd: BigNumberish;
-      enabled: boolean;
-    },
-    isPaused: boolean,
-    maxAllowed: BigNumberish,
-    ethPrice: BigNumberish,
-    recipient: string,
-    mintableAddress: string,
-    mintableCollection: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getRelease(
     releaseId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<{
-    gasRule: {
-      maxGasAllowed: BigNumber;
-      disallowZeroGas: boolean;
-      enabled: boolean;
-      0: BigNumber;
-      1: boolean;
-      2: boolean;
-    };
-    ownershipRule: {
-      tokenAddress: string;
-      tokenIdRangeStart: BigNumber;
-      tokenIdRangeEnd: BigNumber;
-      enabled: boolean;
-      0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: boolean;
-    };
-    isPaused: boolean;
-    maxAllowed: BigNumber;
-    currentReleased: BigNumber;
-    ethPrice: BigNumber;
-    recipient: string;
-    mintableAddress: string;
-    mintableCollection: BigNumber;
-    0: {
-      maxGasAllowed: BigNumber;
-      disallowZeroGas: boolean;
-      enabled: boolean;
-      0: BigNumber;
-      1: boolean;
-      2: boolean;
-    };
-    1: {
-      tokenAddress: string;
-      tokenIdRangeStart: BigNumber;
-      tokenIdRangeEnd: BigNumber;
-      enabled: boolean;
-      0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: boolean;
-    };
-    2: boolean;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: string;
-    7: string;
-    8: BigNumber;
-  }>;
-
-  "getRelease(uint256)"(
-    releaseId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    gasRule: {
-      maxGasAllowed: BigNumber;
-      disallowZeroGas: boolean;
-      enabled: boolean;
-      0: BigNumber;
-      1: boolean;
-      2: boolean;
-    };
-    ownershipRule: {
-      tokenAddress: string;
-      tokenIdRangeStart: BigNumber;
-      tokenIdRangeEnd: BigNumber;
-      enabled: boolean;
-      0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: boolean;
-    };
-    isPaused: boolean;
-    maxAllowed: BigNumber;
-    currentReleased: BigNumber;
-    ethPrice: BigNumber;
-    recipient: string;
-    mintableAddress: string;
-    mintableCollection: BigNumber;
-    0: {
-      maxGasAllowed: BigNumber;
-      disallowZeroGas: boolean;
-      enabled: boolean;
-      0: BigNumber;
-      1: boolean;
-      2: boolean;
-    };
-    1: {
-      tokenAddress: string;
-      tokenIdRangeStart: BigNumber;
-      tokenIdRangeEnd: BigNumber;
-      enabled: boolean;
-      0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: boolean;
-    };
-    2: boolean;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: string;
-    7: string;
-    8: BigNumber;
-  }>;
+  ): Promise<
+    [
+      [BigNumber, boolean, boolean] & {
+        maxGasAllowed: BigNumber;
+        disallowZeroGas: boolean;
+        enabled: boolean;
+      },
+      [string, BigNumber, BigNumber, boolean] & {
+        tokenAddress: string;
+        tokenIdRangeStart: BigNumber;
+        tokenIdRangeEnd: BigNumber;
+        enabled: boolean;
+      },
+      boolean,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      string,
+      string,
+      BigNumber
+    ] & {
+      gasRule: [BigNumber, boolean, boolean] & {
+        maxGasAllowed: BigNumber;
+        disallowZeroGas: boolean;
+        enabled: boolean;
+      };
+      ownershipRule: [string, BigNumber, BigNumber, boolean] & {
+        tokenAddress: string;
+        tokenIdRangeStart: BigNumber;
+        tokenIdRangeEnd: BigNumber;
+        enabled: boolean;
+      };
+      isPaused: boolean;
+      maxAllowed: BigNumber;
+      currentReleased: BigNumber;
+      ethPrice: BigNumber;
+      recipient: string;
+      mintableAddress: string;
+      mintableCollection: BigNumber;
+    }
+  >;
 
   mint(
     releaseId: BigNumberish,
     tokenOwned: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "mint(uint256,uint256)"(
-    releaseId: BigNumberish,
-    tokenOwned: BigNumberish,
-    overrides?: PayableOverrides
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  "owner()"(overrides?: CallOverrides): Promise<string>;
-
   recoverERC20(
     tokenAddress: string,
     tokenAmount: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "recoverERC20(address,uint256)"(
-    tokenAddress: string,
-    tokenAmount: BigNumberish,
-    overrides?: Overrides
+  recoverETH(
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  recoverETH(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "recoverETH()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   setPaused(
     releaseId: BigNumberish,
     isPaused: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setPaused(uint256,bool)"(
-    releaseId: BigNumberish,
-    isPaused: boolean,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   transferOwnership(
     newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "transferOwnership(address)"(
-    newOwner: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -588,138 +385,50 @@ export class DynamicSketchMinter extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "createRelease(tuple,tuple,bool,uint256,uint256,address,address,uint256)"(
-      sketchReleaseGasRule: {
-        maxGasAllowed: BigNumberish;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-      },
-      sketchReleaseRuleOwnership: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumberish;
-        tokenIdRangeEnd: BigNumberish;
-        enabled: boolean;
-      },
-      isPaused: boolean,
-      maxAllowed: BigNumberish,
-      ethPrice: BigNumberish,
-      recipient: string,
-      mintableAddress: string,
-      mintableCollection: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     getRelease(
       releaseId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<{
-      gasRule: {
-        maxGasAllowed: BigNumber;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-        0: BigNumber;
-        1: boolean;
-        2: boolean;
-      };
-      ownershipRule: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumber;
-        tokenIdRangeEnd: BigNumber;
-        enabled: boolean;
-        0: string;
-        1: BigNumber;
-        2: BigNumber;
-        3: boolean;
-      };
-      isPaused: boolean;
-      maxAllowed: BigNumber;
-      currentReleased: BigNumber;
-      ethPrice: BigNumber;
-      recipient: string;
-      mintableAddress: string;
-      mintableCollection: BigNumber;
-      0: {
-        maxGasAllowed: BigNumber;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-        0: BigNumber;
-        1: boolean;
-        2: boolean;
-      };
-      1: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumber;
-        tokenIdRangeEnd: BigNumber;
-        enabled: boolean;
-        0: string;
-        1: BigNumber;
-        2: BigNumber;
-        3: boolean;
-      };
-      2: boolean;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: string;
-      7: string;
-      8: BigNumber;
-    }>;
-
-    "getRelease(uint256)"(
-      releaseId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      gasRule: {
-        maxGasAllowed: BigNumber;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-        0: BigNumber;
-        1: boolean;
-        2: boolean;
-      };
-      ownershipRule: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumber;
-        tokenIdRangeEnd: BigNumber;
-        enabled: boolean;
-        0: string;
-        1: BigNumber;
-        2: BigNumber;
-        3: boolean;
-      };
-      isPaused: boolean;
-      maxAllowed: BigNumber;
-      currentReleased: BigNumber;
-      ethPrice: BigNumber;
-      recipient: string;
-      mintableAddress: string;
-      mintableCollection: BigNumber;
-      0: {
-        maxGasAllowed: BigNumber;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-        0: BigNumber;
-        1: boolean;
-        2: boolean;
-      };
-      1: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumber;
-        tokenIdRangeEnd: BigNumber;
-        enabled: boolean;
-        0: string;
-        1: BigNumber;
-        2: BigNumber;
-        3: boolean;
-      };
-      2: boolean;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: string;
-      7: string;
-      8: BigNumber;
-    }>;
+    ): Promise<
+      [
+        [BigNumber, boolean, boolean] & {
+          maxGasAllowed: BigNumber;
+          disallowZeroGas: boolean;
+          enabled: boolean;
+        },
+        [string, BigNumber, BigNumber, boolean] & {
+          tokenAddress: string;
+          tokenIdRangeStart: BigNumber;
+          tokenIdRangeEnd: BigNumber;
+          enabled: boolean;
+        },
+        boolean,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        string,
+        string,
+        BigNumber
+      ] & {
+        gasRule: [BigNumber, boolean, boolean] & {
+          maxGasAllowed: BigNumber;
+          disallowZeroGas: boolean;
+          enabled: boolean;
+        };
+        ownershipRule: [string, BigNumber, BigNumber, boolean] & {
+          tokenAddress: string;
+          tokenIdRangeStart: BigNumber;
+          tokenIdRangeEnd: BigNumber;
+          enabled: boolean;
+        };
+        isPaused: boolean;
+        maxAllowed: BigNumber;
+        currentReleased: BigNumber;
+        ethPrice: BigNumber;
+        recipient: string;
+        mintableAddress: string;
+        mintableCollection: BigNumber;
+      }
+    >;
 
     mint(
       releaseId: BigNumberish,
@@ -727,15 +436,7 @@ export class DynamicSketchMinter extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "mint(uint256,uint256)"(
-      releaseId: BigNumberish,
-      tokenOwned: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<string>;
-
-    "owner()"(overrides?: CallOverrides): Promise<string>;
 
     recoverERC20(
       tokenAddress: string,
@@ -743,27 +444,11 @@ export class DynamicSketchMinter extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "recoverERC20(address,uint256)"(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     recoverETH(overrides?: CallOverrides): Promise<void>;
-
-    "recoverETH()"(overrides?: CallOverrides): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
-
     setPaused(
-      releaseId: BigNumberish,
-      isPaused: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setPaused(uint256,bool)"(
       releaseId: BigNumberish,
       isPaused: boolean,
       overrides?: CallOverrides
@@ -773,22 +458,28 @@ export class DynamicSketchMinter extends Contract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
-    OnNewRelease(releaseId: null): EventFilter;
+    OnNewRelease(
+      releaseId?: null
+    ): TypedEventFilter<[BigNumber], { releaseId: BigNumber }>;
 
-    OnPauseChange(releaseId: null, pauseStatus: null): EventFilter;
+    OnPauseChange(
+      releaseId?: null,
+      pauseStatus?: null
+    ): TypedEventFilter<
+      [BigNumber, boolean],
+      { releaseId: BigNumber; pauseStatus: boolean }
+    >;
 
     OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
-    ): EventFilter;
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
   };
 
   estimateGas: {
@@ -810,28 +501,7 @@ export class DynamicSketchMinter extends Contract {
       recipient: string,
       mintableAddress: string,
       mintableCollection: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "createRelease(tuple,tuple,bool,uint256,uint256,address,address,uint256)"(
-      sketchReleaseGasRule: {
-        maxGasAllowed: BigNumberish;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-      },
-      sketchReleaseRuleOwnership: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumberish;
-        tokenIdRangeEnd: BigNumberish;
-        enabled: boolean;
-      },
-      isPaused: boolean,
-      maxAllowed: BigNumberish,
-      ethPrice: BigNumberish,
-      recipient: string,
-      mintableAddress: string,
-      mintableCollection: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getRelease(
@@ -839,67 +509,37 @@ export class DynamicSketchMinter extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getRelease(uint256)"(
-      releaseId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     mint(
       releaseId: BigNumberish,
       tokenOwned: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "mint(uint256,uint256)"(
-      releaseId: BigNumberish,
-      tokenOwned: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "recoverERC20(address,uint256)"(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: Overrides
+    recoverETH(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    recoverETH(overrides?: Overrides): Promise<BigNumber>;
-
-    "recoverETH()"(overrides?: Overrides): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     setPaused(
       releaseId: BigNumberish,
       isPaused: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setPaused(uint256,bool)"(
-      releaseId: BigNumberish,
-      isPaused: boolean,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
@@ -922,28 +562,7 @@ export class DynamicSketchMinter extends Contract {
       recipient: string,
       mintableAddress: string,
       mintableCollection: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "createRelease(tuple,tuple,bool,uint256,uint256,address,address,uint256)"(
-      sketchReleaseGasRule: {
-        maxGasAllowed: BigNumberish;
-        disallowZeroGas: boolean;
-        enabled: boolean;
-      },
-      sketchReleaseRuleOwnership: {
-        tokenAddress: string;
-        tokenIdRangeStart: BigNumberish;
-        tokenIdRangeEnd: BigNumberish;
-        enabled: boolean;
-      },
-      isPaused: boolean,
-      maxAllowed: BigNumberish,
-      ethPrice: BigNumberish,
-      recipient: string,
-      mintableAddress: string,
-      mintableCollection: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getRelease(
@@ -951,67 +570,37 @@ export class DynamicSketchMinter extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getRelease(uint256)"(
-      releaseId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     mint(
       releaseId: BigNumberish,
       tokenOwned: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "mint(uint256,uint256)"(
-      releaseId: BigNumberish,
-      tokenOwned: BigNumberish,
-      overrides?: PayableOverrides
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "recoverERC20(address,uint256)"(
-      tokenAddress: string,
-      tokenAmount: BigNumberish,
-      overrides?: Overrides
+    recoverETH(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    recoverETH(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "recoverETH()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     setPaused(
       releaseId: BigNumberish,
       isPaused: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setPaused(uint256,bool)"(
-      releaseId: BigNumberish,
-      isPaused: boolean,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

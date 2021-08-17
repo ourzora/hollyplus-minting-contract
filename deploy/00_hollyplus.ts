@@ -14,8 +14,9 @@ module.exports = async ({ getNamedAccounts, deployments, ethers }: any) => {
   );
 
   if (auctionHouse) {
+    console.log(auctionHouse);
     // Set auction house approval
-    await mintableCollection.setApprovalForAll(auctionHouse);
+    // await mintableCollection.setApprovalForAll(auctionHouse);
   }
 };
 module.exports.tags = ["HollyPlus"];
