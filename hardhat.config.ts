@@ -10,36 +10,16 @@ import { HardhatUserConfig } from "hardhat/config";
 import NETWORKS_CONFIG from "./networks.private.json";
 import apikeys from "./apikeys.private.json";
 
-task("accounts", "Prints the list of accounts", async (args, hre) => {
-  const accounts = await hre.ethers.getSigners();
-
-  for (const account of accounts) {
-    console.log(account.address);
-  }
-});
-
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
-  // etherscan: {
-  //   apiKey: apikeys.etherscan,
-  // },
   gasReporter: {
     currency: "USD",
-    gasPrice: 20,
-    // coinmarketcap: apikeys.coinmarketcap,
+    gasPrice: 40,
   },
   networks: {
-    hardhat: {
-      // fix metamask
-      chainId: 1337,
-    },
-    // mumbai: {
-    //   chainId: 80001,
-    //   url: "https://rpc-mumbai.maticvigil.com",
-    // },
     ...NETWORKS_CONFIG,
   },
   namedAccounts: {
@@ -52,15 +32,6 @@ const config: HardhatUserConfig = {
   },
   solidity: {
     compilers: [
-      {
-        version: "0.6.8",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 999999,
-          },
-        },
-      },
       {
         version: "0.8.5",
         settings: {
