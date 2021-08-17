@@ -14,3 +14,5 @@ How to use:
 5. run `yarn run deploy --network rinkeby` to deploy to rinkeby
 6. run `yarn run deploy --network mainnet` to deploy to mainnet
 
+See deployed:
+Current canoical deployment is at `0x6688Ee4E6e17a9cF88A13Da833b011E64C2B4203`
