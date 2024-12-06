@@ -17,21 +17,21 @@ contract RoyaltyConfig is IERC2981, ERC165 {
     mapping(uint256 => RoyaltyInfo) public royalities;
 
     function _setRoyaltyPayoutAddressForToken(
-        address royaltyReciever,
+        address royaltyReceiver,
         uint256 tokenId
     ) internal virtual {
-        emit UpdatedRoyalty(tokenId, royaltyReciever, royalities[tokenId].bps);
-        royalities[tokenId].receiver = royaltyReciever;
+        emit UpdatedRoyalty(tokenId, royaltyReceiver, royalities[tokenId].bps);
+        royalities[tokenId].receiver = royaltyReceiver;
     }
 
     function _setRoyaltyForToken(
-        address royaltyReciever,
+        address royaltyReceiver,
         uint256 royaltyBPS,
         uint256 tokenId
     ) internal virtual {
-        emit UpdatedRoyalty(tokenId, royaltyReciever, royaltyBPS);
+        emit UpdatedRoyalty(tokenId, royaltyReceiver, royaltyBPS);
         royalities[tokenId] = RoyaltyInfo({
-            receiver: royaltyReciever,
+            receiver: royaltyReceiver,
             bps: royaltyBPS
         });
     }
